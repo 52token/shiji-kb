@@ -150,6 +150,20 @@ def extract_shihao_from_name(name: str, chapters: List[str] = None) -> Optional[
     if chapters:
         in_important_chapters = any(ch in important_chapters for ch in chapters)
 
+    # 检查是否包含"谥号+爵位"后还有其他内容（如"武公弟德公"）
+    # 这种情况说明是人名边界标注错误，应该排除
+    for check_rank in RANK_LEVELS:
+        for check_char in SHIHAO_CHARS:
+            pattern_check = f'{check_char}{check_rank}(.+)$'
+            match_check = re.search(pattern_check, name)
+            if match_check:
+                # 如果谥号+爵位后还有内容，可能是标注边界错误
+                # 但需要排除末尾是数字的情况（如"秦文公元年"中的"文公元"）
+                after_part = match_check.group(1)
+                # 简单检查：如果后面部分不是纯数字也不是"年"，则排除
+                if after_part and not re.match(r'^[\d年]+$', after_part):
+                    return None
+
     for rank in RANK_LEVELS:
         # 先尝试匹配双字谥号
         pattern_double = f'^(.{{0,3}})([{"".join(SHIHAO_CHARS)}]{{2}})({rank})$'

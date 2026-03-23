@@ -120,7 +120,42 @@ def extract_shihao_from_name(name: str, chapters: List[str] = None) -> Optional[
 
     # 匹配模式：[前缀][谥号字1-2个][爵位]
     # 前缀可选（0-3字），谥号字必需（1-2字），爵位必需（1字）
-    common_states = ['周', '秦', '汉', '齐', '楚', '燕', '赵', '魏', '韩', '宋', '鲁', '卫', '陈', '蔡', '曹', '郑', '吴', '越', '晋']
+
+    # 从feudal_state_wordlist.json加载完整邦国列表
+    feudal_states_file = Path(__file__).parent.parent / 'data' / 'feudal_state_wordlist.json'
+    common_states = []
+    if feudal_states_file.exists():
+        with open(feudal_states_file, 'r', encoding='utf-8') as f:
+            feudal_data = json.load(f)
+            always_feudal = feudal_data.get('always_feudal', [])
+            context_dep = feudal_data.get('context_dependent', {}).get('names', [])
+            # 只使用单字国名（前缀长度限制为3字）
+            all_states = set(always_feudal) | set(context_dep)
+            common_states = [s for s in all_states if 0 < len(s) <= 3]
+
+    # 如果加载失败，使用默认列表
+    if not common_states:
+        common_states = ['周', '秦', '汉', '齐', '楚', '燕', '赵', '魏', '韩', '宋', '鲁', '卫', '陈', '蔡', '曹', '郑', '吴', '越', '晋']
+
+    # 大夫家族姓氏（各国卿大夫）
+    daifu_families = [
+        # 晋国卿大夫
+        '范', '智', '赵', '韩', '魏', '栾', '郤', '荀', '士', '中行', '祁', '羊舌',
+        # 齐国卿大夫
+        '田', '高', '国', '崔', '庆', '鲍', '陈',
+        # 鲁国卿大夫
+        '季', '孟', '叔', '仲', '臧', '东门', '南宫', '子', '展', '公孙',
+        # 楚国卿大夫
+        '斗', '成', '若敖', '蒍', '申',  '屈', '昭',
+        # 郑国卿大夫
+        '子', '公孙', '良', '印', '驷',
+        # 卫国卿大夫
+        '孙', '宁', '石', '北宫',
+        # 宋国卿大夫
+        '华', '向', '戴', '鱼',
+        # 其他
+        '吴', '西门', '乐', '晏'
+    ]
 
     # 年表、本纪、世家章节 - 在这些章节中可以放宽前缀要求
     important_chapters = {
@@ -172,16 +207,23 @@ def extract_shihao_from_name(name: str, chapters: List[str] = None) -> Optional[
             prefix, shihao, rank_char = match.groups()
             # 验证两个字都是谥号字
             if shihao[0] in SHIHAO_CHARS and shihao[1] in SHIHAO_CHARS:
-                # 验证爵位要求
+                # 验证爵位和前缀要求
                 if rank in ['侯', '伯', '男']:
-                    # 侯、伯、男：如果出现在重要章节中，允许没有前缀
+                    # 侯、伯、男：
+                    # 1. 在重要章节中：允许无前缀
+                    # 2. 在普通章节中：需要有效前缀（国名或大夫姓氏）
                     if not in_important_chapters:
-                        if not prefix or (len(prefix) == 1 and prefix not in common_states):
+                        if not prefix:
+                            continue
+                        # 单字前缀必须是已知国名或大夫姓氏
+                        if len(prefix) == 1 and prefix not in common_states and prefix not in daifu_families:
                             continue
                 elif rank == '子':
-                    # 子爵：前缀通常是姓氏，可以是单字。但完全没有前缀的要过滤
+                    # 子爵：前缀通常是大夫姓氏，也可能是小国名
+                    # 允许单字或多字前缀（如"季"、"叔孙"）
                     if not prefix and not in_important_chapters:
                         continue
+                    # 如果有前缀，优先视为大夫家族
                 return (shihao, rank_char, prefix)
 
         # 再尝试匹配单字谥号
@@ -189,17 +231,23 @@ def extract_shihao_from_name(name: str, chapters: List[str] = None) -> Optional[
         match = re.match(pattern_single, name)
         if match:
             prefix, shihao, rank_char = match.groups()
-            # 验证爵位要求
+            # 验证爵位和前缀要求
             if rank in ['侯', '伯', '男']:
-                # 侯、伯、男：如果出现在重要章节中，允许没有前缀
+                # 侯、伯、男：
+                # 1. 在重要章节中：允许无前缀
+                # 2. 在普通章节中：需要有效前缀（国名或大夫姓氏）
                 if not in_important_chapters:
-                    if not prefix or (len(prefix) == 1 and prefix not in common_states):
+                    if not prefix:
+                        continue
+                    # 单字前缀必须是已知国名或大夫姓氏
+                    if len(prefix) == 1 and prefix not in common_states and prefix not in daifu_families:
                         continue
             elif rank == '子':
-                # 子爵：前缀通常是姓氏，可以是单字。但完全没有前缀的要过滤
-                # 只在重要章节中允许无前缀
+                # 子爵：前缀通常是大夫姓氏，也可能是小国名
+                # 允许单字或多字前缀（如"季"、"叔孙"）
                 if not prefix and not in_important_chapters:
                     continue
+                # 如果有前缀，优先视为大夫家族
             return (shihao, rank_char, prefix)
 
     return None

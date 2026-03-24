@@ -81,9 +81,9 @@ def generate_html(json_path, output_path):
         # 根据段落字数计算节点大小（字数越多，节点越大）
         char_count = len(para['full_text'])
         # 基础大小 + 按字数缩放（每100字增加1单位）
-        # 整体缩小：基础从20开始，最大不超过35
-        size = min(20 + (char_count / 100), 35)
-        size = max(size, 15)  # 最小15
+        # 超大尺寸：基础从200开始，最大不超过300
+        size = min(200 + (char_count / 100) * 8, 300)
+        size = max(size, 150)  # 最小150
 
         # 构建纯文本tooltip（不使用HTML标签，使用换行）
         subsection_text = para.get('subsection', '')
@@ -98,18 +98,21 @@ def generate_html(json_path, output_path):
 
         tooltip = '\\n'.join(tooltip_parts)
 
-        # 使用换行符将编号和标题分开：第一行在圆圈内，第二行在圆圈下方
+        # 编号显示在圆圈内，标题保存为自定义属性用于Canvas绘制
         nodes.append({
             'id': para['anchor'],
-            'label': para['anchor'] + '\\n' + para_title,  # 编号\n标题
+            'label': para['anchor'],  # 只显示编号在圆圈内
             'title': tooltip,  # 纯文本tooltip
             'group': para['section'],
             'color': section_color,
             'size': size,
             'font': {
-                'size': 10,  # 编号字号
-                'color': '#000'
-            }
+                'size': 48,  # 编号字号（超大字号）
+                'color': '#000',
+                'face': 'Arial',
+                'bold': True
+            },
+            'para_title': para_title  # 保存标题用于Canvas绘制
         })
 
     # 构建边数据（JSON格式）
@@ -171,38 +174,55 @@ def generate_html(json_path, output_path):
     <title>《史记·五帝本纪》段落关系知识图谱</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
     <style>
-        body {{
-            font-family: "Songti SC", "SimSun", "Microsoft YaHei", sans-serif;
+        * {{
+            box-sizing: border-box;  /* 确保padding和border计入宽高 */
+        }}
+
+        html, body {{
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;  /* 防止页面滚动 */
+        }}
+
+        body {{
+            font-family: "Songti SC", "SimSun", "Microsoft YaHei", sans-serif;
             background: #f5f5f5;
+            display: flex;
+            flex-direction: column;  /* 垂直布局：header在上，container在下 */
         }}
 
         .header {{
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
             color: white;
-            padding: 20px;
+            padding: 15px 20px;  /* 减小上下padding */
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;  /* header不会被压缩 */
         }}
 
         .header h1 {{
-            margin: 0 0 10px 0;
-            font-size: 2em;
+            margin: 0 0 8px 0;
+            font-size: 1.8em;  /* 稍微减小字号 */
         }}
 
         .header p {{
-            margin: 5px 0;
+            margin: 3px 0;
             opacity: 0.9;
+            font-size: 0.9em;
         }}
 
         .container {{
             display: flex;
-            height: calc(100vh - 140px);
+            flex: 1;  /* 占据剩余所有空间 */
+            position: relative;
+            overflow: hidden;  /* 防止container内容超出 */
         }}
 
         .sidebar {{
             width: 300px;
+            flex-shrink: 0;  /* 防止侧边栏被压缩 */
             background: white;
             padding: 20px;
             overflow-y: auto;
@@ -268,32 +288,46 @@ def generate_html(json_path, output_path):
         #graph {{
             flex: 1;
             background: white;
-            min-height: 600px;
+            width: 100%;
             height: 100%;
+            position: relative;  /* 让按钮相对于graph定位 */
         }}
 
         .controls {{
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #ddd;
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10000;  /* 高于vis按钮 */
         }}
 
         .btn {{
-            padding: 8px 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             background: #8B4513;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            padding: 0;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }}
 
         .btn:hover {{
             background: #A0522D;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transform: scale(1.05);
+        }}
+
+        .btn:active {{
+            transform: scale(0.95);
         }}
 
         .filter-group {{
@@ -321,6 +355,7 @@ def generate_html(json_path, output_path):
             font-size: 0.85em;
             color: #856404;
         }}
+
     </style>
 </head>
 <body>
@@ -416,12 +451,18 @@ def generate_html(json_path, output_path):
         </div>
 
         <div id="graph"></div>
-    </div>
 
-    <div class="controls">
-        <button class="btn" onclick="network.fit()">适应视图</button>
-        <button class="btn" onclick="resetLayout()">重置布局</button>
-        <button class="btn" onclick="togglePhysics()">切换物理引擎</button>
+        <div class="controls">
+            <button class="btn" onclick="zoomIn()" title="放大">+</button>
+            <button class="btn" onclick="zoomOut()" title="缩小">−</button>
+            <button class="btn" onclick="fitToView()" title="适应视图">⊙</button>
+            <button class="btn" onclick="moveUp()" title="向上移动">↑</button>
+            <button class="btn" onclick="moveDown()" title="向下移动">↓</button>
+            <button class="btn" onclick="moveLeft()" title="向左移动">←</button>
+            <button class="btn" onclick="moveRight()" title="向右移动">→</button>
+            <button class="btn" onclick="resetLayout()" title="随机布局">⟲</button>
+            <button class="btn" onclick="togglePhysics()" title="切换物理引擎">⚡</button>
+        </div>
     </div>
 
     <script>
@@ -441,10 +482,16 @@ def generate_html(json_path, output_path):
                 borderWidthSelected: 4,
                 shadow: true,
                 font: {
-                    size: 10,
+                    size: 48,  // 超大全局字号
                     color: '#000',
-                    face: 'arial',
-                    vadjust: 0
+                    face: 'Arial',
+                    vadjust: 0,
+                    strokeWidth: 0
+                },
+                scaling: {
+                    label: {
+                        enabled: false  // 禁用标签缩放，保持字体大小固定
+                    }
                 },
                 labelHighlightBold: false
             },
@@ -463,6 +510,14 @@ def generate_html(json_path, output_path):
             },
             physics: {
                 enabled: true,
+                barnesHut: {
+                    gravitationalConstant: -8000,  // 增加排斥力，让节点更分散
+                    centralGravity: 0.1,  // 减少中心引力
+                    springLength: 200,  // 增加弹簧长度，让节点距离更远
+                    springConstant: 0.02,
+                    damping: 0.09,
+                    avoidOverlap: 1  // 避免节点重叠
+                },
                 stabilization: {
                     enabled: true,
                     iterations: 500,
@@ -471,13 +526,16 @@ def generate_html(json_path, output_path):
                 }
             },
             layout: {
-                improvedLayout: true
+                improvedLayout: true,
+                randomSeed: undefined  // 每次随机初始化
             },
             interaction: {
                 hover: true,
                 tooltipDelay: 100,
-                navigationButtons: true,
-                keyboard: true
+                navigationButtons: false,  // 禁用vis.js自带的导航按钮，使用自定义按钮
+                keyboard: true,
+                zoomView: true,
+                dragView: true
             }
         };
 
@@ -494,11 +552,56 @@ def generate_html(json_path, output_path):
         const network = new vis.Network(container, data, options);
 
         console.log('Network created');
+        console.log('Container size:', container.clientWidth, 'x', container.clientHeight);
+
+
+        // 强制刷新canvas尺寸以填满容器
+        window.addEventListener('resize', function() {
+            network.redraw();
+        });
+
+        // 初始化时也刷新一次
+        setTimeout(function() {
+            network.redraw();
+            network.fit();
+        }, 100);
+
+        // 自定义绘制：在节点下方绘制标题
+        let debugOnce = false;
+        network.on("afterDrawing", function(ctx) {
+            const nodePositions = network.getPositions();
+
+            nodesData.forEach(node => {
+                if (node.para_title && nodePositions[node.id]) {
+                    const canvasPos = nodePositions[node.id];
+                    // 从原始数据获取size值
+                    const nodeRadius = node.size || 45;
+
+                    // 调试：只打印一次第一个节点的信息
+                    if (!debugOnce && node.id === '1') {
+                        console.log('Node 1 size:', nodeRadius);
+                        console.log('Node 1 position:', canvasPos);
+                        debugOnce = true;
+                    }
+
+                    // 设置字体和样式
+                    ctx.font = 'bold 36px "Songti SC", "SimSun", "Microsoft YaHei", serif';
+                    ctx.fillStyle = '#333';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+
+                    // 在节点下方绘制标题（使用固定偏移量）
+                    // 标题紧贴圆圈底部
+                    const yOffset = 80;  // 调整偏移量以匹配超大圆圈
+                    ctx.fillText(node.para_title, canvasPos.x, canvasPos.y + yOffset);
+                }
+            });
+        });
 
         // 网络初始化完成后适应视图
-        network.once('afterDrawing', function() {
-            console.log('First drawing complete');
-            network.fit();
+        network.once('stabilized', function() {
+            console.log('Network stabilized');
+            fitToView();
         });
 
         // 鼠标悬停效果：根据距离调整节点和边的透明度
@@ -627,19 +730,124 @@ def generate_html(json_path, output_path):
             edges.update(updatedEdges);
         }
 
+        // 适应视图：尽可能放大填满容器
+        // 缩放功能
+        function zoomIn() {
+            const scale = network.getScale();
+            network.moveTo({
+                scale: scale * 1.2,
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function zoomOut() {
+            const scale = network.getScale();
+            network.moveTo({
+                scale: scale / 1.2,
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        // 移动功能
+        function moveUp() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x, y: position.y - 100 },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveDown() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x, y: position.y + 100 },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveLeft() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x - 100, y: position.y },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveRight() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x + 100, y: position.y },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        // 适应视图
+        function fitToView() {
+            network.fit({
+                animation: {
+                    duration: 500,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
         // 物理引擎开关
         let physicsEnabled = true;
         function togglePhysics() {
             physicsEnabled = !physicsEnabled;
             network.setOptions({ physics: { enabled: physicsEnabled } });
+
+            // 更新按钮图标和提示（第9个按钮）
+            const btn = document.querySelector('.controls button:nth-child(9)');
+            if (btn) {
+                btn.textContent = physicsEnabled ? '⚡' : '⏸';
+                btn.title = physicsEnabled ? '关闭物理引擎' : '开启物理引擎';
+                btn.style.background = physicsEnabled ? '#8B4513' : '#999';
+            }
+
+            console.log('物理引擎已' + (physicsEnabled ? '开启' : '关闭'));
         }
 
-        // 重置布局
+        // 随机生成新布局
         function resetLayout() {
+            // 为每个节点生成随机位置
+            const nodeIds = nodes.getIds();
+            const updatedNodes = nodeIds.map(id => {
+                return {
+                    id: id,
+                    x: Math.random() * 2000 - 1000,  // -1000 到 1000
+                    y: Math.random() * 2000 - 1000
+                };
+            });
+
+            // 更新节点位置
+            nodes.update(updatedNodes);
+
+            // 启用物理引擎让布局稳定下来
             network.setOptions({ physics: { enabled: true } });
-            setTimeout(() => {
-                network.fit();
-            }, 1000);
+
+            // 稳定后自动适应视图
+            network.once('stabilizationIterationsDone', function() {
+                fitToView();
+            });
         }
 
         // 关系筛选

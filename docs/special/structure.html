@@ -6,38 +6,55 @@
     <title>《史记·五帝本纪》段落关系知识图谱</title>
     <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
     <style>
-        body {
-            font-family: "Songti SC", "SimSun", "Microsoft YaHei", sans-serif;
+        * {
+            box-sizing: border-box;  /* 确保padding和border计入宽高 */
+        }
+
+        html, body {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;  /* 防止页面滚动 */
+        }
+
+        body {
+            font-family: "Songti SC", "SimSun", "Microsoft YaHei", sans-serif;
             background: #f5f5f5;
+            display: flex;
+            flex-direction: column;  /* 垂直布局：header在上，container在下 */
         }
 
         .header {
             background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
             color: white;
-            padding: 20px;
+            padding: 15px 20px;  /* 减小上下padding */
             text-align: center;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            flex-shrink: 0;  /* header不会被压缩 */
         }
 
         .header h1 {
-            margin: 0 0 10px 0;
-            font-size: 2em;
+            margin: 0 0 8px 0;
+            font-size: 1.8em;  /* 稍微减小字号 */
         }
 
         .header p {
-            margin: 5px 0;
+            margin: 3px 0;
             opacity: 0.9;
+            font-size: 0.9em;
         }
 
         .container {
             display: flex;
-            height: calc(100vh - 140px);
+            flex: 1;  /* 占据剩余所有空间 */
+            position: relative;
+            overflow: hidden;  /* 防止container内容超出 */
         }
 
         .sidebar {
             width: 300px;
+            flex-shrink: 0;  /* 防止侧边栏被压缩 */
             background: white;
             padding: 20px;
             overflow-y: auto;
@@ -103,32 +120,46 @@
         #graph {
             flex: 1;
             background: white;
-            min-height: 600px;
+            width: 100%;
             height: 100%;
+            position: relative;  /* 让按钮相对于graph定位 */
         }
 
         .controls {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #ddd;
+            position: absolute;
+            top: 20px;
+            right: 20px;
             display: flex;
-            justify-content: center;
-            gap: 10px;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 10000;  /* 高于vis按钮 */
         }
 
         .btn {
-            padding: 8px 16px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
             background: #8B4513;
             color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            padding: 0;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background 0.3s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
         }
 
         .btn:hover {
             background: #A0522D;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            transform: scale(1.05);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
         }
 
         .filter-group {
@@ -156,6 +187,7 @@
             font-size: 0.85em;
             color: #856404;
         }
+
     </style>
 </head>
 <body>
@@ -293,12 +325,18 @@
         </div>
 
         <div id="graph"></div>
-    </div>
 
-    <div class="controls">
-        <button class="btn" onclick="network.fit()">适应视图</button>
-        <button class="btn" onclick="resetLayout()">重置布局</button>
-        <button class="btn" onclick="togglePhysics()">切换物理引擎</button>
+        <div class="controls">
+            <button class="btn" onclick="zoomIn()" title="放大">+</button>
+            <button class="btn" onclick="zoomOut()" title="缩小">−</button>
+            <button class="btn" onclick="fitToView()" title="适应视图">⊙</button>
+            <button class="btn" onclick="moveUp()" title="向上移动">↑</button>
+            <button class="btn" onclick="moveDown()" title="向下移动">↓</button>
+            <button class="btn" onclick="moveLeft()" title="向左移动">←</button>
+            <button class="btn" onclick="moveRight()" title="向右移动">→</button>
+            <button class="btn" onclick="resetLayout()" title="随机布局">⟲</button>
+            <button class="btn" onclick="togglePhysics()" title="切换物理引擎">⚡</button>
+        </div>
     </div>
 
     <script>
@@ -306,531 +344,663 @@
         const nodesData = [
   {
     "id": "1",
-    "label": "1\\n黄帝出身",
+    "label": "1",
     "title": "[1] 黄帝出身\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n黄帝者，少典之子，姓公孙，名曰轩辕。生而神灵，弱而能言，幼而徇齐，长而敦敏，成而聪明。",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.43,
+    "size": 203.44,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "黄帝出身"
   },
   {
     "id": "1.1",
-    "label": "1.1\\n征伐诸侯",
+    "label": "1.1",
     "title": "[1.1] 征伐诸侯\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n轩辕之时，神农氏世衰。诸侯相，暴虐百姓，而神农氏弗能征。於是轩辕乃习用干戈，以征不享，诸侯咸来宾从。而蚩尤最为暴，莫能。炎帝欲陵诸侯，诸侯咸归轩辕。轩辕乃修德振...",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 21.24,
+    "size": 209.92,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "征伐诸侯"
   },
   {
     "id": "1.2",
-    "label": "1.2\\n擒蚩尤",
+    "label": "1.2",
     "title": "[1.2] 擒蚩尤\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n蚩尤作乱，不用帝命。於是黄帝乃徵师诸侯，与蚩尤於涿鹿之野，遂蚩尤。",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.33,
+    "size": 202.64,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "擒蚩尤"
   },
   {
     "id": "1.3",
-    "label": "1.3\\n为天子",
+    "label": "1.3",
     "title": "[1.3] 为天子\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n而诸侯咸尊轩辕为天子，代神农氏，是为黄帝。天下有不顺者，黄帝从而征之，平者去之，披山通道，未尝宁居。",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.5,
+    "size": 204.0,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "为天子"
   },
   {
     "id": "3",
-    "label": "3\\n治理天下",
+    "label": "3",
     "title": "[3] 治理天下\\n章节: 黄帝\\n小节: 疆域与治理\\n\\n迁徙往来无常处，以师兵为营卫。官名皆以云命，为云师。置左右大监，监于万国。万国和，而鬼神山川封禅与为多焉。获宝鼎，迎日推筴。举风后、力牧、常先、大鸿以治民。顺天...",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 21.51,
+    "size": 212.08,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "治理天下"
   },
   {
     "id": "4",
-    "label": "4\\n黄帝子嗣",
+    "label": "4",
     "title": "[4] 黄帝子嗣\\n章节: 黄帝\\n小节: 疆域与治理\\n\\n黄帝二十五子，其得姓者十四人。",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.15,
+    "size": 201.2,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "黄帝子嗣"
   },
   {
     "id": "4.1",
-    "label": "4.1\\n嫘祖二子",
+    "label": "4.1",
     "title": "[4.1] 嫘祖二子\\n章节: 黄帝\\n小节: 后裔与世系\\n\\n黄帝居轩辕之丘，而娶於西陵之女，是为嫘祖。嫘祖为黄帝正妃，生二子，其後皆有天下：",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.4,
+    "size": 203.2,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "嫘祖二子"
   },
   {
     "id": "4.2",
-    "label": "4.2\\n黄帝崩",
+    "label": "4.2",
     "title": "[4.2] 黄帝崩\\n章节: 黄帝\\n小节: 后裔与世系\\n\\n黄帝崩，葬桥山。其孙昌意之子高阳立，是为帝颛顼也。",
     "group": "黄帝",
     "color": "#FFD700",
-    "size": 20.25,
+    "size": 202.0,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "黄帝崩"
   },
   {
     "id": "5",
-    "label": "5\\n颛顼德行",
+    "label": "5",
     "title": "[5] 颛顼德行\\n章节: 帝颛顼\\n\\n帝颛顼高阳者，黄帝之孙而昌意之子也。静渊以有谋，疏通而知事；养材以任地，载时以象天，依鬼神以制义，治气以教化，絜诚以祭祀。",
     "group": "帝颛顼",
     "color": "#87CEEB",
-    "size": 20.61,
+    "size": 204.88,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "颛顼德行"
   },
   {
     "id": "6",
-    "label": "6\\n颛顼崩",
+    "label": "6",
     "title": "[6] 颛顼崩\\n章节: 帝颛顼\\n\\n帝颛顼生子曰穷蝉。颛顼崩，而玄嚣之孙高辛立，是为帝喾。",
     "group": "帝颛顼",
     "color": "#87CEEB",
-    "size": 20.27,
+    "size": 202.16,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "颛顼崩"
   },
   {
     "id": "7",
-    "label": "7\\n帝喾世系",
+    "label": "7",
     "title": "[7] 帝喾世系\\n章节: 帝喾\\n\\n帝喾高辛者，黄帝之曾孙也。高辛父曰蟜极，蟜极父曰玄嚣，玄嚣父曰黄帝。自玄嚣与蟜极皆不得在位，至高辛即帝位。高辛於颛顼为族子。",
     "group": "帝喾",
     "color": "#98FB98",
-    "size": 20.62,
+    "size": 204.96,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "帝喾世系"
   },
   {
     "id": "8",
-    "label": "8\\n帝喾德行",
+    "label": "8",
     "title": "[8] 帝喾德行\\n章节: 帝喾\\n\\n高辛生而神灵，自言其名。普施利物，不於其身。聪以知远，明以察微。顺天之义，知民之急。仁而威，惠而信，脩身而天下服。",
     "group": "帝喾",
     "color": "#98FB98",
-    "size": 20.57,
+    "size": 204.56,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "帝喾德行"
   },
   {
     "id": "9",
-    "label": "9\\n帝喾崩",
+    "label": "9",
     "title": "[9] 帝喾崩\\n章节: 帝喾\\n\\n帝喾娶陈锋氏女，生放勋。娶娵訾氏女，生挚。帝喾崩，而挚代立。帝挚立，不善，而弟放勋立，是为帝尧。",
     "group": "帝喾",
     "color": "#98FB98",
-    "size": 20.48,
+    "size": 203.84,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "帝喾崩"
   },
   {
     "id": "10",
-    "label": "10\\n帝尧德行",
+    "label": "10",
     "title": "[10] 帝尧德行\\n章节: 帝尧\\n小节: 钦明文思\\n\\n帝尧者，放勋。其仁如天，其知如神。就之如日，望之如云。富而不骄，贵而不舒。黄收纯衣，彤车乘白马。能明驯德，以亲九族。九族既睦，便章百姓。百姓昭明，合和万国。",
     "group": "帝尧",
     "color": "#FFA07A",
-    "size": 20.78,
+    "size": 206.24,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "帝尧德行"
   },
   {
     "id": "11",
-    "label": "11\\n制定历法",
+    "label": "11",
     "title": "[11] 制定历法\\n章节: 帝尧\\n小节: 历法与农时\\n\\n乃命羲、和，敬顺昊天，数法日月星辰，敬授民时。",
     "group": "帝尧",
     "color": "#FFA07A",
-    "size": 20.23,
+    "size": 201.84,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "制定历法"
   },
   {
     "id": "11.5",
-    "label": "11.5\\n闰月四时",
+    "label": "11.5",
     "title": "[11.5] 闰月四时\\n章节: 帝尧\\n小节: 历法与农时\\n\\n岁三百六十六日，以闰月正四时。信饬百官，众功皆兴。",
     "group": "帝尧",
     "color": "#FFA07A",
-    "size": 20.25,
+    "size": 202.0,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "闰月四时"
   },
   {
     "id": "13.8",
-    "label": "13.8\\n尧选舜",
+    "label": "13.8",
     "title": "[13.8] 尧选舜\\n章节: 帝尧\\n小节: 禅让之始\\n\\n於是尧妻之二女，观其德於二女。舜饬下二女於妫汭，如妇礼。尧善之，乃使舜慎和五典，五典能从。乃遍入百官，百官时序。宾於四门，四门穆穆，诸侯远方宾客皆敬。尧使舜入山...",
     "group": "帝尧",
     "color": "#FFA07A",
-    "size": 21.51,
+    "size": 212.08,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "尧选舜"
   },
   {
     "id": "14",
-    "label": "14\\n舜摄政",
+    "label": "14",
     "title": "[14] 舜摄政\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n於是帝尧老，命舜摄行天子之政，以观天命。舜乃在璿玑玉衡，以齐七政。遂类于上帝，禋于六宗，望于山川，辩于群神。揖五瑞，择吉月日，见四岳诸牧，班瑞。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.72,
+    "size": 205.76,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜摄政"
   },
   {
     "id": "14.1",
-    "label": "14.1\\n巡狩礼制",
+    "label": "14.1",
     "title": "[14.1] 巡狩礼制\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n岁二月，东巡狩，至於岱宗，祡，望秩於山川。遂见东方君长，合时月正日，同律度量衡，脩五礼五玉三帛二生一死为挚，如五器，卒乃复。五月，南巡狩；八月，西巡狩；十一月，...",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 21.01,
+    "size": 208.08,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "巡狩礼制"
   },
   {
     "id": "14.2",
-    "label": "14.2\\n刑法教化",
+    "label": "14.2",
     "title": "[14.2] 刑法教化\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n五岁一巡狩，群后四朝。遍告以言，明试以功，车服以庸。肇十有二州，决川。象以典刑，流宥五刑，鞭作官刑，扑作教刑，金作赎刑。眚灾过，；怙终贼，。钦哉，钦哉，惟刑之静...",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.82,
+    "size": 206.56,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "刑法教化"
   },
   {
     "id": "15",
-    "label": "15\\n惩四罪",
+    "label": "15",
     "title": "[15] 惩四罪\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n讙兜进言共工，尧曰不可而试之工师，共工果淫辟。四岳举鲧治鸿水，尧以为不可，岳彊请试之，试之而无功，故百姓不便。三苗在江淮、荆州数为乱。於是舜归而言於帝，",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.76,
+    "size": 206.08,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "惩四罪"
   },
   {
     "id": "15.5",
-    "label": "15.5\\n天下服",
+    "label": "15.5",
     "title": "[15.5] 天下服\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n四罪而天下咸服。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.08,
+    "size": 200.64,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "天下服"
   },
   {
     "id": "16",
-    "label": "16\\n尧崩",
+    "label": "16",
     "title": "[16] 尧崩\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧立七十年得舜，二十年而老，令舜摄行天子之政，荐之於天。尧辟位凡二十八年而崩。百姓悲哀，如丧父母。三年，四方莫举乐，以思尧。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.62,
+    "size": 204.96,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "尧崩"
   },
   {
     "id": "16.1",
-    "label": "16.1\\n授舜天下",
+    "label": "16.1",
     "title": "[16.1] 授舜天下\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧知子丹硃之不肖，不足授天下，於是乃权授舜。授舜，则天下得其利而丹硃病；授丹硃，则天下病而丹硃得其利。尧曰\"终不以天下之病而利一人\"，而卒授舜以天下。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.75,
+    "size": 206.0,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "授舜天下"
   },
   {
     "id": "16.2",
-    "label": "16.2\\n舜让辟",
+    "label": "16.2",
     "title": "[16.2] 舜让辟\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧崩，三年之丧毕，舜让辟丹硃於南河之南。诸侯朝觐者不之丹硃而之舜，狱讼者不之丹硃而之舜，讴歌者不讴歌丹硃而讴歌舜。舜曰\"天也\"，夫而後之中国践天子位焉，是为帝舜...",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.81,
+    "size": 206.48,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜让辟"
   },
   {
     "id": "17",
-    "label": "17\\n舜世系",
+    "label": "17",
     "title": "[17] 舜世系\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n虞舜者，名曰重华。重华父曰瞽叟，瞽叟父曰桥牛，桥牛父曰句望，句望父曰敬康，敬康父曰穷蝉，穷蝉父曰帝颛顼，颛顼父曰昌意：以至舜七世矣。自从穷蝉以至帝舜，皆微为庶人...",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.81,
+    "size": 206.48,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜世系"
   },
   {
     "id": "18",
-    "label": "18\\n父弟欲杀",
+    "label": "18",
     "title": "[18] 父弟欲杀\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜父瞽叟盲，而舜母死，瞽叟更娶妻而生象，象傲。瞽叟爱後妻子，常欲舜，舜避逃；及有小过，则受罪。顺事父及後母与弟，日以笃谨，匪有解。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.65,
+    "size": 205.2,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "父弟欲杀"
   },
   {
     "id": "19",
-    "label": "19\\n舜事亲孝",
+    "label": "19",
     "title": "[19] 舜事亲孝\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜，冀州之人也。舜耕历山，渔雷泽，陶河滨，作什器於寿丘，就时於负夏。舜父瞽叟顽，母嚚，弟象傲，皆欲舜。舜顺適不失子道，兄弟孝慈。欲，不可得；即求，尝在侧。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.77,
+    "size": 206.16,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜事亲孝"
   },
   {
     "id": "20",
-    "label": "20\\n尧妻二女",
+    "label": "20",
     "title": "[20] 尧妻二女\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜年二十以孝闻。三十而帝尧问可用者，四岳咸荐虞舜，曰可。於是尧乃以二女妻舜以观其内，使九男与处以观其外。舜居妫汭，内行弥谨。尧二女不敢以贵骄事舜亲戚，甚有妇道。...",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 21.61,
+    "size": 212.88,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "尧妻二女"
   },
   {
     "id": "20.1",
-    "label": "20.1\\n焚廪脱险",
+    "label": "20.1",
     "title": "[20.1] 焚廪脱险\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n瞽叟尚复欲之，使舜上涂廪，瞽叟从下纵火焚廪。舜乃以两笠自扞而下，去，得不死。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.38,
+    "size": 203.04,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "焚廪脱险"
   },
   {
     "id": "20.2",
-    "label": "20.2\\n实井逃生",
+    "label": "20.2",
     "title": "[20.2] 实井逃生\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n後瞽叟又使舜穿井，舜穿井为匿空旁出。舜既入深，瞽叟与象共下土实井，舜从匿空出，去。瞽叟、象喜，以舜为已死。",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.53,
+    "size": 204.24,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "实井逃生"
   },
   {
     "id": "20.3",
-    "label": "20.3\\n复事瞽叟",
+    "label": "20.3",
     "title": "[20.3] 复事瞽叟\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜复事瞽叟爱弟弥谨。於是尧乃试舜五典百官，皆治。 :::",
     "group": "帝舜",
     "color": "#DDA0DD",
-    "size": 20.28,
+    "size": 202.24,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "复事瞽叟"
   },
   {
     "id": "21",
-    "label": "21\\n八恺八元",
+    "label": "21",
     "title": "[21] 八恺八元\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n昔高阳氏有才子八人，世得其利，谓之\"八恺\"。高辛氏有才子八人，世谓之\"八元\"。此十六族者，世济其美，不陨其名。至於尧，尧未能举。舜举八恺，使主后土，以揆百事，莫...",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 21.16,
+    "size": 209.28,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "八恺八元"
   },
   {
     "id": "22.6",
-    "label": "22.6\\n流四凶",
+    "label": "22.6",
     "title": "[22.6] 流四凶\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n天下恶之，比之三凶。舜宾於四门，乃流四凶族，迁于四裔，以御螭魅，於是四门辟，言毋凶人也。",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.44,
+    "size": 203.52,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "流四凶"
   },
   {
     "id": "23",
-    "label": "23\\n舜入麓",
+    "label": "23",
     "title": "[23] 舜入麓\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜入于大麓，烈风雷雨不迷，尧乃知舜之足授天下。尧老，使舜摄行天子政，巡狩。舜得举用事二十年，而尧使摄政。摄政八年而尧崩。三年丧毕，让丹硃，天下归舜。",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.74,
+    "size": 205.92,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜入麓"
   },
   {
     "id": "23.1",
-    "label": "23.1\\n举十贤",
+    "label": "23.1",
     "title": "[23.1] 举十贤\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n而禹、皋陶、契、后稷、伯夷、夔、龙、倕、益、彭祖自尧时而皆举用，未有分职。於是舜乃至於文祖，谋于四岳，辟四门，明通四方耳目，命十二牧论帝德，行厚德，远佞人，则蛮...",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.84,
+    "size": 206.72,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "举十贤"
   },
   {
     "id": "23.2",
-    "label": "23.2\\n分职任能",
+    "label": "23.2",
     "title": "[23.2] 分职任能\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜谓四岳曰：“有能奋庸美尧之事者，使居官相事？”",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.24,
+    "size": 201.92,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "分职任能"
   },
   {
     "id": "23.3",
-    "label": "23.3\\n三年考功",
+    "label": "23.3",
     "title": "[23.3] 三年考功\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜曰：\"嗟！女二十有二人，敬哉，惟时相天事。\"三岁一考功，三考绌陟，远近众功咸兴。分北三苗。",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.46,
+    "size": 203.68,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "三年考功"
   },
   {
     "id": "24",
-    "label": "24\\n群臣成功",
+    "label": "24",
     "title": "[24] 群臣成功\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n此二十二人咸成厥功：",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.1,
+    "size": 200.8,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "群臣成功"
   },
   {
     "id": "25",
-    "label": "25\\n舜崩",
+    "label": "25",
     "title": "[25] 舜崩\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜年二十以孝闻，年三十尧举之，年五十摄行天子事，年五十八尧崩，年六十一代尧践帝位。践帝位三十九年，南巡狩，崩於苍梧之野。葬於江南九疑，是为零陵。",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.72,
+    "size": 205.76,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜崩"
   },
   {
     "id": "25.1",
-    "label": "25.1\\n舜让禹",
+    "label": "25.1",
     "title": "[25.1] 舜让禹\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜之践帝位，载天子旗，往朝父瞽叟，夔夔唯谨，如子道。封弟象为诸侯。舜子商均亦不肖，舜乃豫荐禹於天。十七年而崩。三年丧毕，禹亦乃让舜子，如舜让尧子。诸侯归之，然後...",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.86,
+    "size": 206.88,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "舜让禹"
   },
   {
     "id": "25.2",
-    "label": "25.2\\n不敢专",
+    "label": "25.2",
     "title": "[25.2] 不敢专\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n尧子丹硃，舜子商均，皆有疆土，以奉先祀。服其服，礼乐如之。以客见天子，天子弗臣，示不敢专也。",
     "group": "举贤任能",
     "color": "#F0E68C",
-    "size": 20.46,
+    "size": 203.68,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "不敢专"
   },
   {
     "id": "26",
-    "label": "26\\n五帝世系",
+    "label": "26",
     "title": "[26] 五帝世系\\n章节: 五帝\\n\\n自黄帝至舜、禹，皆同姓而异其国号，以章明德。",
     "group": "五帝",
     "color": "#E0E0E0",
-    "size": 20.22,
+    "size": 201.76,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "五帝世系"
   },
   {
     "id": "27",
-    "label": "27\\n太史公曰",
+    "label": "27",
     "title": "[27] 太史公曰\\n章节: 太史公\\n\\n太史公曰：学者多称五帝，尚矣。然〖{尚书〗独载尧以来；而百家言黄帝，其文不雅驯，荐绅先生难言之。孔子所传宰予问五帝德及帝系姓，儒者或不传。余尝西至空桐，北过涿鹿...",
     "group": "太史公",
     "color": "#D3D3D3",
-    "size": 22.23,
+    "size": 217.84,
     "font": {
-      "size": 10,
-      "color": "#000"
-    }
+      "size": 48,
+      "color": "#000",
+      "face": "Arial",
+      "bold": true
+    },
+    "para_title": "太史公曰"
   }
 ];
         const edgesData = [
@@ -3219,10 +3389,16 @@
                 borderWidthSelected: 4,
                 shadow: true,
                 font: {
-                    size: 10,
+                    size: 48,  // 超大全局字号
                     color: '#000',
-                    face: 'arial',
-                    vadjust: 0
+                    face: 'Arial',
+                    vadjust: 0,
+                    strokeWidth: 0
+                },
+                scaling: {
+                    label: {
+                        enabled: false  // 禁用标签缩放，保持字体大小固定
+                    }
                 },
                 labelHighlightBold: false
             },
@@ -3241,6 +3417,14 @@
             },
             physics: {
                 enabled: true,
+                barnesHut: {
+                    gravitationalConstant: -8000,  // 增加排斥力，让节点更分散
+                    centralGravity: 0.1,  // 减少中心引力
+                    springLength: 200,  // 增加弹簧长度，让节点距离更远
+                    springConstant: 0.02,
+                    damping: 0.09,
+                    avoidOverlap: 1  // 避免节点重叠
+                },
                 stabilization: {
                     enabled: true,
                     iterations: 500,
@@ -3249,13 +3433,16 @@
                 }
             },
             layout: {
-                improvedLayout: true
+                improvedLayout: true,
+                randomSeed: undefined  // 每次随机初始化
             },
             interaction: {
                 hover: true,
                 tooltipDelay: 100,
-                navigationButtons: true,
-                keyboard: true
+                navigationButtons: false,  // 禁用vis.js自带的导航按钮，使用自定义按钮
+                keyboard: true,
+                zoomView: true,
+                dragView: true
             }
         };
 
@@ -3272,11 +3459,56 @@
         const network = new vis.Network(container, data, options);
 
         console.log('Network created');
+        console.log('Container size:', container.clientWidth, 'x', container.clientHeight);
+
+
+        // 强制刷新canvas尺寸以填满容器
+        window.addEventListener('resize', function() {
+            network.redraw();
+        });
+
+        // 初始化时也刷新一次
+        setTimeout(function() {
+            network.redraw();
+            network.fit();
+        }, 100);
+
+        // 自定义绘制：在节点下方绘制标题
+        let debugOnce = false;
+        network.on("afterDrawing", function(ctx) {
+            const nodePositions = network.getPositions();
+
+            nodesData.forEach(node => {
+                if (node.para_title && nodePositions[node.id]) {
+                    const canvasPos = nodePositions[node.id];
+                    // 从原始数据获取size值
+                    const nodeRadius = node.size || 45;
+
+                    // 调试：只打印一次第一个节点的信息
+                    if (!debugOnce && node.id === '1') {
+                        console.log('Node 1 size:', nodeRadius);
+                        console.log('Node 1 position:', canvasPos);
+                        debugOnce = true;
+                    }
+
+                    // 设置字体和样式
+                    ctx.font = 'bold 36px "Songti SC", "SimSun", "Microsoft YaHei", serif';
+                    ctx.fillStyle = '#333';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'top';
+
+                    // 在节点下方绘制标题（使用固定偏移量）
+                    // 标题紧贴圆圈底部
+                    const yOffset = 80;  // 调整偏移量以匹配超大圆圈
+                    ctx.fillText(node.para_title, canvasPos.x, canvasPos.y + yOffset);
+                }
+            });
+        });
 
         // 网络初始化完成后适应视图
-        network.once('afterDrawing', function() {
-            console.log('First drawing complete');
-            network.fit();
+        network.once('stabilized', function() {
+            console.log('Network stabilized');
+            fitToView();
         });
 
         // 鼠标悬停效果：根据距离调整节点和边的透明度
@@ -3405,19 +3637,124 @@
             edges.update(updatedEdges);
         }
 
+        // 适应视图：尽可能放大填满容器
+        // 缩放功能
+        function zoomIn() {
+            const scale = network.getScale();
+            network.moveTo({
+                scale: scale * 1.2,
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function zoomOut() {
+            const scale = network.getScale();
+            network.moveTo({
+                scale: scale / 1.2,
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        // 移动功能
+        function moveUp() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x, y: position.y - 100 },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveDown() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x, y: position.y + 100 },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveLeft() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x - 100, y: position.y },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        function moveRight() {
+            const position = network.getViewPosition();
+            network.moveTo({
+                position: { x: position.x + 100, y: position.y },
+                animation: {
+                    duration: 300,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
+        // 适应视图
+        function fitToView() {
+            network.fit({
+                animation: {
+                    duration: 500,
+                    easingFunction: 'easeInOutQuad'
+                }
+            });
+        }
+
         // 物理引擎开关
         let physicsEnabled = true;
         function togglePhysics() {
             physicsEnabled = !physicsEnabled;
             network.setOptions({ physics: { enabled: physicsEnabled } });
+
+            // 更新按钮图标和提示（第9个按钮）
+            const btn = document.querySelector('.controls button:nth-child(9)');
+            if (btn) {
+                btn.textContent = physicsEnabled ? '⚡' : '⏸';
+                btn.title = physicsEnabled ? '关闭物理引擎' : '开启物理引擎';
+                btn.style.background = physicsEnabled ? '#8B4513' : '#999';
+            }
+
+            console.log('物理引擎已' + (physicsEnabled ? '开启' : '关闭'));
         }
 
-        // 重置布局
+        // 随机生成新布局
         function resetLayout() {
+            // 为每个节点生成随机位置
+            const nodeIds = nodes.getIds();
+            const updatedNodes = nodeIds.map(id => {
+                return {
+                    id: id,
+                    x: Math.random() * 2000 - 1000,  // -1000 到 1000
+                    y: Math.random() * 2000 - 1000
+                };
+            });
+
+            // 更新节点位置
+            nodes.update(updatedNodes);
+
+            // 启用物理引擎让布局稳定下来
             network.setOptions({ physics: { enabled: true } });
-            setTimeout(() => {
-                network.fit();
-            }, 1000);
+
+            // 稳定后自动适应视图
+            network.once('stabilizationIterationsDone', function() {
+                fitToView();
+            });
         }
 
         // 关系筛选

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试</title>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        #mynetwork {
+            width: 100%;
+            height: 600px;
+            border: 1px solid lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div id="mynetwork"></div>
+    <script type="text/javascript">
+        var nodes = new vis.DataSet([
+            {id: 1, label: 'Node 1'},
+            {id: 2, label: 'Node 2'},
+            {id: 3, label: 'Node 3'}
+        ]);
+
+        var edges = new vis.DataSet([
+            {from: 1, to: 2},
+            {from: 2, to: 3}
+        ]);
+
+        var container = document.getElementById('mynetwork');
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+        var options = {};
+        var network = new vis.Network(container, data, options);
+
+        console.log('Test network created');
+    </script>
+</body>
+</html>

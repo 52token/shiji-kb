@@ -4,8 +4,12 @@
 """
 
 import json
-import re
 from pathlib import Path
+import sys
+
+# 导入统一的语义标签处理模块
+sys.path.insert(0, str(Path(__file__).parent))
+from semantic_tags import render_tags_to_html, get_entity_css_styles
 
 
 def clean_markdown_tags(text):
@@ -16,31 +20,8 @@ def clean_markdown_tags(text):
 
 
 def render_entity_tags(text):
-    """将实体标注转换为HTML"""
-    # 人名 @
-    text = re.sub(r'〖@([^〗]+)〗', r'<span class="entity person" title="人名">\1</span>', text)
-    # 地名 =
-    text = re.sub(r'〖=([^〗]+)〗', r'<span class="entity place" title="地名">\1</span>', text)
-    # 官职 ;
-    text = re.sub(r'〖;([^〗]+)〗', r'<span class="entity office" title="官职">\1</span>', text)
-    # 时间 %
-    text = re.sub(r'〖%([^〗]+)〗', r'<span class="entity time" title="时间">\1</span>', text)
-    # 器物 •
-    text = re.sub(r'〖•([^〗]+)〗', r'<span class="entity object" title="器物">\1</span>', text)
-    # 典籍 {
-    text = re.sub(r'〖\{([^〗]+)〗', r'<span class="entity book" title="典籍">\1</span>', text)
-    # 氏族 &
-    text = re.sub(r'〖&([^〗]+)〗', r'<span class="entity clan" title="氏族">\1</span>', text)
-    # 邦国 '
-    text = re.sub(r'〖\'([^〗]+)〗', r'<span class="entity state" title="邦国">\1</span>', text)
-    # 事件 ^
-    text = re.sub(r'〖\^([^〗]+)〗', r'<span class="entity event" title="事件">\1</span>', text)
-    # 身份 #
-    text = re.sub(r'〖#([^〗]+)〗', r'<span class="entity identity" title="身份">\1</span>', text)
-    # 生物 +
-    text = re.sub(r'〖\+([^〗]+)〗', r'<span class="entity biology" title="生物">\1</span>', text)
-
-    return text
+    """将实体标注转换为HTML（使用统一标准）"""
+    return render_tags_to_html(text, normalize_legacy=True)
 
 
 def generate_html(taishigongyue_list):
@@ -127,6 +108,7 @@ def generate_html(taishigongyue_list):
             color: #444;
         }
 
+        /* 使用统一的实体标注样式 */
         .entity {
             font-weight: 500;
             border-bottom: 1px dotted;
@@ -134,16 +116,12 @@ def generate_html(taishigongyue_list):
         }
 
         .entity.person { color: #c00; border-bottom-color: #c00; }
+        .entity.time { color: #06c; border-bottom-color: #06c; }
         .entity.place { color: #080; border-bottom-color: #080; }
         .entity.office { color: #660; border-bottom-color: #660; }
-        .entity.time { color: #06c; border-bottom-color: #06c; }
-        .entity.object { color: #c0c; border-bottom-color: #c0c; }
-        .entity.book { color: #900; border-bottom-color: #900; }
-        .entity.clan { color: #c60; border-bottom-color: #c60; }
-        .entity.state { color: #009; border-bottom-color: #009; }
-        .entity.event { color: #690; border-bottom-color: #690; }
-        .entity.identity { color: #939; border-bottom-color: #939; }
-        .entity.biology { color: #060; border-bottom-color: #060; }
+        .entity.war { color: #690; border-bottom-color: #690; }
+        .entity.ref { color: #999; border-bottom-color: #999; }
+        .entity.other { color: #999; border-bottom-color: #999; }
 
         .footer {
             text-align: center;

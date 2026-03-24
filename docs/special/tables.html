@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>十表结构化 - 史记知识库</title>
+    <link rel="stylesheet" href="../css/shiji-styles.css">
+    <link rel="stylesheet" href="../css/entity-index.css">
+    <style>
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 2em;
+            margin: 2em 0;
+        }
+
+        .table-card {
+            border: 1px solid #e6e0c0;
+            border-radius: 8px;
+            background: #fffef8;
+            padding: 1.5em;
+            transition: all 0.3s ease;
+        }
+
+        .table-card:hover {
+            box-shadow: 0 4px 12px rgba(139, 69, 19, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .table-number {
+            font-size: 0.9em;
+            color: #999;
+            font-weight: bold;
+            margin-bottom: 0.5em;
+        }
+
+        .table-title {
+            font-size: 1.5em;
+            color: #8B4513;
+            font-weight: bold;
+            margin-bottom: 0.8em;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 0.5em;
+        }
+
+        .table-desc {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 1em;
+        }
+
+        .table-stats {
+            display: flex;
+            gap: 1.5em;
+            margin: 1em 0;
+            flex-wrap: wrap;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            padding: 0.4em 0.8em;
+            background: #f0f7ff;
+            border: 1px solid #b8d4f1;
+            border-radius: 4px;
+            font-size: 0.85em;
+            color: #2c5aa0;
+        }
+
+        .table-links {
+            display: flex;
+            gap: 0.8em;
+            margin-top: 1.2em;
+        }
+
+        .table-link {
+            flex: 1;
+            text-align: center;
+            padding: 0.6em;
+            background: #8B4513;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s;
+            font-size: 0.9em;
+        }
+
+        .table-link:hover {
+            background: #6d3510;
+        }
+
+        .table-link.secondary {
+            background: #fff;
+            color: #8B4513;
+            border: 1px solid #8B4513;
+        }
+
+        .table-link.secondary:hover {
+            background: #f8f5e8;
+        }
+
+        .intro-section {
+            background: #fffef8;
+            border-left: 4px solid #d4af37;
+            padding: 1.5em;
+            margin: 2em 0;
+            line-height: 2;
+            color: #555;
+        }
+
+        .intro-section strong {
+            color: #8B4513;
+        }
+
+        .stats-summary {
+            background: #f0f7ff;
+            border: 1px solid #b8d4f1;
+            border-radius: 6px;
+            padding: 1.2em;
+            margin: 2em 0;
+        }
+
+        .stats-summary h2 {
+            margin-top: 0;
+            color: #2c5aa0;
+            border-bottom: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1em;
+            margin-top: 1em;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1em;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.3em;
+        }
+
+        .category-section {
+            margin: 3em 0;
+        }
+
+        .category-title {
+            font-size: 1.8em;
+            color: #8B4513;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 0.5em;
+            margin-bottom: 1.5em;
+        }
+
+        @media (max-width: 768px) {
+            .table-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>十表结构化数据</h1>
+        <p class="subtitle">史记十表的JSON结构化与时间线可视化</p>
+    </div>
+
+    <nav class="breadcrumb">
+        <a href="../index.html">首页</a> &gt;
+        <a href="special_index.html">专项索引</a> &gt;
+        <span>十表结构化</span>
+    </nav>
+
+    <div class="content">
+        <!-- 说明 -->
+        <div class="intro-section">
+            <p>《史记》<strong>十表</strong>是司马迁创立的编年体表格，以年代为经、诸侯国或人物为纬，展现历史的时空结构。</p>
+            <p>本页提供十表的<strong>JSON结构化数据</strong>，包含时间、人物、事件等信息，可用于时间线可视化、数据分析等应用。</p>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="stats-summary">
+            <h2>数据概览</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">10</div>
+                    <div class="stat-label">史记表格</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2500+</div>
+                    <div class="stat-label">年跨度</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">JSON</div>
+                    <div class="stat-label">结构化格式</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">可视化</div>
+                    <div class="stat-label">时间线生成</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 世系表（1张） -->
+        <div class="category-section">
+            <h2 class="category-title">世系表</h2>
+            <div class="table-grid">
+                <div class="table-card">
+                    <div class="table-number">第013篇</div>
+                    <div class="table-title">三代世表</div>
+                    <div class="table-desc">
+                        记录夏商周三代世系传承，从黄帝到春秋时期的君主谱系。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">时间跨度：约2000年</span>
+                        <span class="stat-badge">三代世系</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/013_三代世表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/013_三代世表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 年表（4张） -->
+        <div class="category-section">
+            <h2 class="category-title">年表</h2>
+            <div class="table-grid">
+                <div class="table-card">
+                    <div class="table-number">第014篇</div>
+                    <div class="table-title">十二诸侯年表</div>
+                    <div class="table-desc">
+                        春秋时期十二诸侯国编年记事，展现列国兴衰与相互关系。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前722-前468年</span>
+                        <span class="stat-badge">12国并列</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/014_十二诸侯年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/014_十二诸侯年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第015篇</div>
+                    <div class="table-title">六国年表</div>
+                    <div class="table-desc">
+                        战国七雄编年，记录秦统一天下前的兼并战争与纵横捭阖。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前475-前207年</span>
+                        <span class="stat-badge">7国纷争</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/015_六国年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/015_六国年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第016篇</div>
+                    <div class="table-title">秦楚之际月表</div>
+                    <div class="table-desc">
+                        秦末农民战争到楚汉争霸，以月为单位的详细编年，展现天下大乱时期。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前209-前206年</span>
+                        <span class="stat-badge">逐月记事</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/016_秦楚之际月表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/016_秦楚之际月表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第017篇</div>
+                    <div class="table-title">汉兴以来诸侯王年表</div>
+                    <div class="table-desc">
+                        汉初诸侯王分封与削藩过程，记录从分封到中央集权的演变。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前202-前100年</span>
+                        <span class="stat-badge">诸侯消长</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/017_汉兴以来诸侯王年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/017_汉兴以来诸侯王年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功臣表（5张） -->
+        <div class="category-section">
+            <h2 class="category-title">功臣侯表</h2>
+            <div class="table-grid">
+                <div class="table-card">
+                    <div class="table-number">第018篇</div>
+                    <div class="table-title">高祖功臣侯者年表</div>
+                    <div class="table-desc">
+                        汉高祖分封功臣列侯，记录143位开国功臣的封爵、传承与兴衰。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">143位列侯</span>
+                        <span class="stat-badge">世系传承</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/018_高祖功臣侯者年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/018_高祖功臣侯者年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第019篇</div>
+                    <div class="table-title">惠景间侯者年表</div>
+                    <div class="table-desc">
+                        惠帝、吕后、景帝时期封侯记录，展现政治斗争与功臣兴替。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前195-前141年</span>
+                        <span class="stat-badge">政治变动</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/019_惠景间侯者年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/019_惠景间侯者年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第020篇</div>
+                    <div class="table-title">建元以来侯者年表</div>
+                    <div class="table-desc">
+                        武帝建元以来封侯记录，反映汉武盛世的功臣封赏制度。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前140-前100年</span>
+                        <span class="stat-badge">武帝封侯</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/020_建元以来侯者年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/020_建元以来侯者年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第021篇</div>
+                    <div class="table-title">建元已来王子侯者年表</div>
+                    <div class="table-desc">
+                        武帝时期诸侯王子弟封侯记录，体现推恩令政策的实施效果。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前140-前100年</span>
+                        <span class="stat-badge">推恩令</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/021_建元已来王子侯者年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/021_建元已来王子侯者年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+
+                <div class="table-card">
+                    <div class="table-number">第022篇</div>
+                    <div class="table-title">汉兴以来将相名臣年表</div>
+                    <div class="table-desc">
+                        汉代丞相、太尉、御史大夫等高官任职记录，展现政治制度与人事变迁。
+                    </div>
+                    <div class="table-stats">
+                        <span class="stat-badge">前202-前100年</span>
+                        <span class="stat-badge">将相世系</span>
+                    </div>
+                    <div class="table-links">
+                        <a href="../../data/tables/data/022_汉兴以来将相名臣年表.json" class="table-link" target="_blank">JSON数据</a>
+                        <a href="../chapters/022_汉兴以来将相名臣年表.html" class="table-link secondary">原文</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据说明 -->
+        <div class="intro-section">
+            <h3 style="margin-top: 0;">数据格式说明</h3>
+            <p>所有表格均以JSON格式提供，包含以下字段：</p>
+            <ul style="margin-left: 2em; line-height: 2;">
+                <li><strong>时间信息</strong>：年份、月份、纪年方式</li>
+                <li><strong>人物信息</strong>：姓名、谥号、封地、世系</li>
+                <li><strong>事件记录</strong>：大事记、战争、政治变动</li>
+                <li><strong>关系网络</strong>：父子、兄弟、君臣关系</li>
+            </ul>
+            <p>数据可用于：</p>
+            <ul style="margin-left: 2em; line-height: 2;">
+                <li>生成交互式时间线可视化</li>
+                <li>分析历史人物关系网络</li>
+                <li>研究朝代兴衰与政治演变</li>
+                <li>教学与学术研究</li>
+            </ul>
+        </div>
+
+        <!-- 技术信息 -->
+        <div class="notes-section" style="background: #fffef8; border: 1px solid #e6e0c0; border-radius: 4px; padding: 1.5em; margin-top: 2em;">
+            <h4 style="color: #8B4513; margin: 0 0 1em 0;">技术信息</h4>
+            <div style="color: #666; line-height: 2;">
+                <p>• 数据位置：<code>data/tables/data/*.json</code></p>
+                <p>• 格式：标准JSON，UTF-8编码</p>
+                <p>• 总大小：约640KB</p>
+                <p>• 更新时间：2026年3月20日</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

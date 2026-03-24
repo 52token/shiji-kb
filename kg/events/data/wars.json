@@ -4437,9 +4437,9 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "王龁代",
           "张唐",
-          "王龁"
+          "王龁",
+          "王龁代"
         ],
         "advisors": []
       },
@@ -7431,8 +7431,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "王闻讯",
-          "项羽北"
+          "项羽北",
+          "王闻讯"
         ],
         "advisors": []
       },
@@ -18047,8 +18047,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "廉颇",
-          "赵必令"
+          "赵必令",
+          "廉颇"
         ],
         "advisors": []
       },
@@ -21161,8 +21161,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "王转而",
-          "王兴兵"
+          "王兴兵",
+          "王转而"
         ],
         "advisors": []
       },
@@ -31316,8 +31316,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "张耳",
-          "张耳未"
+          "张耳未",
+          "张耳"
         ],
         "advisors": []
       },
@@ -32371,8 +32371,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "韩信佯",
-          "韩信"
+          "韩信",
+          "韩信佯"
         ],
         "advisors": []
       },
@@ -32595,8 +32595,8 @@
       "attacker": {
         "state": [],
         "commanders": [
-          "项梁败",
-          "韩司徒"
+          "韩司徒",
+          "项梁败"
         ],
         "advisors": []
       },
@@ -36535,9 +36535,9 @@
       "attacker": {
         "state": [],
         "commanders": [
+          "李氏名",
           "李陵",
-          "李广利",
-          "李氏名"
+          "李广利"
         ],
         "advisors": []
       },

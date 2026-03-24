@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>姓氏宗族 - 史记知识库</title>
+    <link rel="stylesheet" href="../css/shiji-styles.css">
+    <link rel="stylesheet" href="../css/entity-index.css">
+    <style>
+        /* 姓氏宗族特定样式 */
+        .xing-entry {
+            margin: 2.5em 0;
+            padding: 0;
+            border: 1px solid #e6e0c0;
+            border-radius: 8px;
+            background: #fffef8;
+        }
+
+        .xing-header {
+            padding: 1.5em;
+            cursor: pointer;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: linear-gradient(to right, #f8f5e8, #fffef8);
+        }
+
+        .xing-header:hover {
+            background: linear-gradient(to right, #f0ece0, #f8f5e8);
+        }
+
+        .xing-char {
+            font-size: 2.5em;
+            color: #8B0000;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 0.3em;
+            margin: 0;
+            display: inline-block;
+            font-weight: bold;
+        }
+
+        .xing-toggle {
+            font-size: 0.6em;
+            color: #999;
+            margin-left: 0.5em;
+            transition: transform 0.3s;
+        }
+
+        .xing-entry.collapsed .xing-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .xing-content {
+            padding: 0 1.5em 1.5em 1.5em;
+            display: none;
+        }
+
+        .xing-entry:not(.collapsed) .xing-content {
+            display: block;
+        }
+
+        .xing-origin {
+            margin: 1em 0 1.5em 0;
+            padding: 1em 1.2em;
+            background: #f0f7ff;
+            border-left: 4px solid #5a8fc7;
+            line-height: 1.8;
+        }
+
+        .xing-origin strong {
+            color: #2c5aa0;
+            font-size: 1.1em;
+        }
+
+        .xing-ancestor {
+            color: #8B4513;
+            font-weight: bold;
+        }
+
+        .states-section, .shi-section {
+            margin: 1.5em 0;
+            padding: 1em;
+            background: #fdfdf8;
+            border: 1px solid #f0ece0;
+            border-radius: 4px;
+        }
+
+        .states-section h4, .shi-section h4 {
+            color: #5a4a2a;
+            margin: 0 0 0.8em 0;
+            font-size: 1.2em;
+            border-bottom: 2px solid #d0c8a0;
+            padding-bottom: 0.5em;
+        }
+
+        .state-list, .shi-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6em;
+            margin: 0;
+        }
+
+        .state-tag, .shi-tag {
+            display: inline-block;
+            padding: 0.4em 0.8em;
+            background: #fff;
+            border: 1px solid #d4af37;
+            border-radius: 4px;
+            color: #8B4513;
+            font-size: 0.95em;
+            transition: all 0.2s;
+        }
+
+        .state-tag:hover, .shi-tag:hover {
+            background: #d4af37;
+            color: white;
+        }
+
+        .notes-section {
+            margin: 2em 0 1em 0;
+            padding: 1em 1.2em;
+            background: #fffef8;
+            border: 1px solid #e6e0c0;
+            border-radius: 4px;
+        }
+
+        .notes-section h4 {
+            color: #8B4513;
+            margin: 0 0 0.8em 0;
+            font-size: 1.1em;
+        }
+
+        .note-item {
+            margin: 0.5em 0;
+            padding-left: 1em;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .stats-summary {
+            background: #f0f7ff;
+            border: 1px solid #b8d4f1;
+            border-radius: 6px;
+            padding: 1.2em;
+            margin: 2em 0;
+        }
+
+        .stats-summary h2 {
+            margin-top: 0;
+            color: #2c5aa0;
+            border-bottom: none;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1em;
+            margin-top: 1em;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 1em;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2em;
+            color: #2c5aa0;
+            font-weight: bold;
+        }
+
+        .stat-label {
+            color: #666;
+            margin-top: 0.3em;
+        }
+
+        .intro-section {
+            background: #fffef8;
+            border-left: 4px solid #d4af37;
+            padding: 1.5em;
+            margin: 2em 0;
+            line-height: 2;
+            color: #555;
+        }
+
+        .intro-section strong {
+            color: #8B4513;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>姓氏宗族谱系</h1>
+        <p class="subtitle">先秦大姓源流与血缘网络</p>
+    </div>
+
+    <nav class="breadcrumb">
+        <a href="../index.html">首页</a> &gt;
+        <a href="special_index.html">专项索引</a> &gt;
+        <span>姓氏宗族</span>
+    </nav>
+
+    <div class="content">
+        <!-- 说明 -->
+        <div class="intro-section">
+            <p><strong>姓氏制度</strong>：先秦时期<strong>姓</strong>与<strong>氏</strong>有别。<strong>姓</strong>为血缘标志，父系世代不变；<strong>氏</strong>为分家标志，因封地、官职或祖名而得。</p>
+            <p>本页汇总《史记》中11个先秦大姓的源流、分封诸国和衍生氏族，以及2053位人物的姓氏推理记录（覆盖率56.6%）。</p>
+        </div>
+
+        <!-- 统计概览 -->
+        <div class="stats-summary">
+            <h2>数据概览</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">11</div>
+                    <div class="stat-label">先秦大姓</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">2053</div>
+                    <div class="stat-label">姓氏推理人物</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">56.6%</div>
+                    <div class="stat-label">人物覆盖率</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">26</div>
+                    <div class="stat-label">诸侯国</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 姓氏条目 -->
+        <div class="xing-list">
+            <!-- 1. 姬姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">姬</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：黄帝，以姬水为姓<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">黄帝</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（16国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">周</span>
+                            <span class="state-tag">鲁</span>
+                            <span class="state-tag">卫</span>
+                            <span class="state-tag">晋</span>
+                            <span class="state-tag">燕</span>
+                            <span class="state-tag">郑</span>
+                            <span class="state-tag">吴</span>
+                            <span class="state-tag">曹</span>
+                            <span class="state-tag">蔡</span>
+                            <span class="state-tag">滕</span>
+                            <span class="state-tag">虞</span>
+                            <span class="state-tag">虢</span>
+                            <span class="state-tag">邢</span>
+                            <span class="state-tag">随</span>
+                            <span class="state-tag">霍</span>
+                            <span class="state-tag">管</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（23氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">周</span>
+                            <span class="shi-tag">鲁</span>
+                            <span class="shi-tag">卫</span>
+                            <span class="shi-tag">晋</span>
+                            <span class="shi-tag">燕</span>
+                            <span class="shi-tag">郑</span>
+                            <span class="shi-tag">吴</span>
+                            <span class="shi-tag">曹</span>
+                            <span class="shi-tag">蔡</span>
+                            <span class="shi-tag">孔</span>
+                            <span class="shi-tag">司马</span>
+                            <span class="shi-tag">孟</span>
+                            <span class="shi-tag">季</span>
+                            <span class="shi-tag">叔孙</span>
+                            <span class="shi-tag">仲孙</span>
+                            <span class="shi-tag">管</span>
+                            <span class="shi-tag">霍</span>
+                            <span class="shi-tag">蒋</span>
+                            <span class="shi-tag">毛</span>
+                            <span class="shi-tag">荀</span>
+                            <span class="shi-tag">韩</span>
+                            <span class="shi-tag">魏</span>
+                            <span class="shi-tag">赵</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. 姜姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">姜</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：炎帝神农，以姜水为姓<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">炎帝</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（4国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">齐</span>
+                            <span class="state-tag">申</span>
+                            <span class="state-tag">吕</span>
+                            <span class="state-tag">许</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（9氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">齐</span>
+                            <span class="shi-tag">晏</span>
+                            <span class="shi-tag">管</span>
+                            <span class="shi-tag">鲍</span>
+                            <span class="shi-tag">崔</span>
+                            <span class="shi-tag">庆</span>
+                            <span class="shi-tag">高</span>
+                            <span class="shi-tag">国</span>
+                            <span class="shi-tag">吕</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. 芈姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">芈</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：颛顼帝后裔，季连之族<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">颛顼</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">楚</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（8氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">屈</span>
+                            <span class="shi-tag">景</span>
+                            <span class="shi-tag">昭</span>
+                            <span class="shi-tag">斗</span>
+                            <span class="shi-tag">蒍</span>
+                            <span class="shi-tag">薳</span>
+                            <span class="shi-tag">成</span>
+                            <span class="shi-tag">项</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4. 嬴姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">嬴</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：少昊之后，伯益因佐禹治水有功赐嬴姓<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">伯益</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（5国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">秦</span>
+                            <span class="state-tag">赵</span>
+                            <span class="state-tag">徐</span>
+                            <span class="state-tag">郯</span>
+                            <span class="state-tag">莒</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（8氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">秦</span>
+                            <span class="shi-tag">赵</span>
+                            <span class="shi-tag">马</span>
+                            <span class="shi-tag">梁</span>
+                            <span class="shi-tag">徐</span>
+                            <span class="shi-tag">黄</span>
+                            <span class="shi-tag">江</span>
+                            <span class="shi-tag">蒙</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 子姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">子</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：商契之后，帝舜赐子姓<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">契</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">宋</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（8氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">宋</span>
+                            <span class="shi-tag">孔</span>
+                            <span class="shi-tag">微</span>
+                            <span class="shi-tag">殷</span>
+                            <span class="shi-tag">戴</span>
+                            <span class="shi-tag">乐</span>
+                            <span class="shi-tag">皇甫</span>
+                            <span class="shi-tag">华</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. 妫姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">妫</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：帝舜之后，封于妫汭<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">舜</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">陈</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（4氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">陈</span>
+                            <span class="shi-tag">田</span>
+                            <span class="shi-tag">袁</span>
+                            <span class="shi-tag">胡</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 7. 姒姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">姒</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：夏禹之后<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">禹</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（2国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">杞</span>
+                            <span class="state-tag">越</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（4氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">夏</span>
+                            <span class="shi-tag">杞</span>
+                            <span class="shi-tag">越</span>
+                            <span class="shi-tag">欧阳</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 8. 任姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">任</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：黄帝后裔，奚仲所出<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">奚仲</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">薛</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（1氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">薛</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 9. 风姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">风</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：太昊伏羲氏<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">伏羲</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国</h4>
+                        <p style="color: #999; padding: 1em 0;">史记未详载</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 10. 己姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">己</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：少昊之后<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">少昊</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">莒</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 11. 曹姓 -->
+            <div class="xing-entry">
+                <div class="xing-header" onclick="toggleXing(this)">
+                    <div>
+                        <span class="xing-char">曹</span>
+                        <span class="xing-toggle">▼</span>
+                    </div>
+                </div>
+                <div class="xing-content">
+                    <div class="xing-origin">
+                        <strong>起源</strong>：颛顼后裔<br>
+                        <strong>始祖</strong>：<span class="xing-ancestor">颛顼</span>
+                    </div>
+
+                    <div class="states-section">
+                        <h4>主要封国（1国）</h4>
+                        <div class="state-list">
+                            <span class="state-tag">邾</span>
+                        </div>
+                    </div>
+
+                    <div class="shi-section">
+                        <h4>衍生氏族（2氏）</h4>
+                        <div class="shi-list">
+                            <span class="shi-tag">邾</span>
+                            <span class="shi-tag">曹</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 重要注释 -->
+        <div class="notes-section">
+            <h4>重要注释</h4>
+            <div class="note-item">• <strong>田氏代齐</strong>：前386年田氏代齐后，齐国君主改为妫姓田氏（陈完后裔）。此前齐国为姜姓。</div>
+            <div class="note-item">• <strong>三家分晋</strong>：韩、魏、赵三家为晋国卿族。韩氏姬姓，魏氏姬姓，赵氏则为嬴姓（与秦同祖）。</div>
+            <div class="note-item">• <strong>赵氏嬴姓</strong>：赵氏为嬴姓，非姬姓。造父封于赵城，以赵为氏。与秦同出于伯益。</div>
+        </div>
+
+        <!-- 数据来源 -->
+        <div class="notes-section">
+            <h4>数据来源</h4>
+            <div class="note-item">• 姓氏源流：<code>kg/entities/data/xing_index.json</code></div>
+            <div class="note-item">• 人物姓氏：<code>kg/entities/data/person_xingshi.json</code> (2053人)</div>
+            <div class="note-item">• 推理详情：<code>kg/entities/data/person_xingshi.md</code></div>
+        </div>
+    </div>
+
+    <script>
+        function toggleXing(header) {
+            const entry = header.parentElement;
+            entry.classList.toggle('collapsed');
+        }
+
+        // 默认展开前3个
+        document.addEventListener('DOMContentLoaded', function() {
+            const entries = document.querySelectorAll('.xing-entry');
+            entries.forEach((entry, index) => {
+                if (index >= 3) {
+                    entry.classList.add('collapsed');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

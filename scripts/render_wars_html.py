@@ -6,6 +6,11 @@
 
 import json
 from pathlib import Path
+import sys
+
+# 导入统一的语义标签处理模块
+sys.path.insert(0, str(Path(__file__).parent))
+from semantic_tags import render_tags_to_html, get_entity_css_styles
 
 def generate_html(json_path, output_path):
     """生成HTML页面"""
@@ -187,6 +192,21 @@ def generate_html(json_path, output_path):
             color: #666;
         }}
 
+        /* 实体标注样式（统一标准） */
+        .entity {{
+            font-weight: 500;
+            border-bottom: 1px dotted;
+            cursor: help;
+        }}
+
+        .entity.person {{ color: #c00; border-bottom-color: #c00; }}
+        .entity.time {{ color: #06c; border-bottom-color: #06c; }}
+        .entity.place {{ color: #080; border-bottom-color: #080; }}
+        .entity.office {{ color: #660; border-bottom-color: #660; }}
+        .entity.war {{ color: #690; border-bottom-color: #690; }}
+        .entity.ref {{ color: #999; border-bottom-color: #999; }}
+        .entity.other {{ color: #999; border-bottom-color: #999; }}
+
         @media print {{
             body {{
                 background: white;
@@ -252,6 +272,8 @@ def generate_html(json_path, output_path):
                 if line.startswith('**') and '**:' in line:
                     label = line.split('**')[1]
                     value = line.split('**:', 1)[1].strip() if '**:' in line else ''
+                    # 渲染语义标签为HTML高亮
+                    value = render_tags_to_html(value, normalize_legacy=True)
                     meta_html += f'''
                 <div class="meta-item">
                     <span class="meta-label">{label}:</span>
@@ -261,6 +283,8 @@ def generate_html(json_path, output_path):
 
             # 完整描述
             full_desc = war.get('full_description', '')
+            # 渲染语义标签为HTML高亮
+            full_desc = render_tags_to_html(full_desc, normalize_legacy=True)
             if len(full_desc) > 300:
                 full_desc = full_desc[:300] + '...'
 

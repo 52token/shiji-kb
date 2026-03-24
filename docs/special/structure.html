@@ -1,0 +1,3479 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>《史记·五帝本纪》段落关系知识图谱</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network@9.1.2/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body {
+            font-family: "Songti SC", "SimSun", "Microsoft YaHei", sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #8B4513 0%, #A0522D 100%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 2em;
+        }
+
+        .header p {
+            margin: 5px 0;
+            opacity: 0.9;
+        }
+
+        .container {
+            display: flex;
+            height: calc(100vh - 140px);
+        }
+
+        .sidebar {
+            width: 300px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h3 {
+            color: #8B4513;
+            border-bottom: 2px solid #8B4513;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+
+        .stats-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            border-left: 3px solid #8B4513;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .legend-color {
+            width: 30px;
+            height: 3px;
+            margin-right: 10px;
+        }
+
+        .legend-color.dashed {
+            background: repeating-linear-gradient(
+                to right,
+                currentColor 0px,
+                currentColor 5px,
+                transparent 5px,
+                transparent 10px
+            );
+        }
+
+        .section-legend {
+            margin-top: 20px;
+        }
+
+        .section-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            font-size: 0.9em;
+        }
+
+        .section-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        #graph {
+            flex: 1;
+            background: white;
+            min-height: 600px;
+            height: 100%;
+        }
+
+        .controls {
+            padding: 15px;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            background: #8B4513;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #A0522D;
+        }
+
+        .filter-group {
+            margin: 15px 0;
+        }
+
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .filter-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        .notice {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            padding: 10px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-size: 0.85em;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>《史记·五帝本纪》段落关系知识图谱</h1>
+        <p>44个段落 × 101个关系 × 8种关系类型</p>
+        <p style="font-size: 0.9em;">SKILL-02d: 段落语义关系建模</p>
+    </div>
+
+    <div class="container">
+        <div class="sidebar">
+            <h3>📊 统计数据</h3>
+            <div class="stats-item">
+                <strong>总段落数</strong>: 44个<br>
+                <strong>总关系数</strong>: 101个<br>
+                <strong>大节数</strong>: 8个<br>
+                <strong>关系类型</strong>: 8种
+            </div>
+
+            <h3>🎨 关系类型图例</h3>
+
+            <div class="legend-item">
+                <div class="legend-color " style="color: #999999; background: #999999; width: 40px; height: 5px;"></div>
+                <span>时序关系 (68)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color " style="color: #e74c3c; background: #e74c3c; width: 40px; height: 3px;"></div>
+                <span>因果关系 (12)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color " style="color: #9b59b6; background: #9b59b6; width: 40px; height: 4px;"></div>
+                <span>世系关系 (6)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color dashed" style="color: #3498db; background: #3498db; width: 40px; height: 2px;"></div>
+                <span>总分关系 (5)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color dashed" style="color: #2ecc71; background: #2ecc71; width: 40px; height: 2px;"></div>
+                <span>并列关系 (4)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color " style="color: #e67e22; background: #e67e22; width: 40px; height: 3px;"></div>
+                <span>对比关系 (2)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color dashed" style="color: #95a5a6; background: #95a5a6; width: 40px; height: 2px;"></div>
+                <span>元评论 (3)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color " style="color: #1abc9c; background: #1abc9c; width: 40px; height: 2px;"></div>
+                <span>补充说明 (1)</span>
+            </div>
+            <h3>📖 章节图例</h3>
+            <div class="section-legend">
+
+                <div class="section-item">
+                    <div class="section-circle" style="background: #FFD700;"></div>
+                    <span>黄帝</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #87CEEB;"></div>
+                    <span>帝颛顼</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #98FB98;"></div>
+                    <span>帝喾</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #FFA07A;"></div>
+                    <span>帝尧</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #DDA0DD;"></div>
+                    <span>帝舜</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #F0E68C;"></div>
+                    <span>举贤任能</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #E0E0E0;"></div>
+                    <span>五帝</span>
+                </div>
+                <div class="section-item">
+                    <div class="section-circle" style="background: #D3D3D3;"></div>
+                    <span>太史公</span>
+                </div>
+            </div>
+
+            <h3>🔍 关系筛选</h3>
+            <div class="filter-group">
+                <label>
+                    <input type="checkbox" class="relation-filter" value="temporal" checked>
+                    时序关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="causal" checked>
+                    因果关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="genealogy" checked>
+                    世系关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="hierarchy" checked>
+                    总分关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="parallel" checked>
+                    并列关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="contrast" checked>
+                    对比关系
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="meta" checked>
+                    元评论
+                </label>
+                <label>
+                    <input type="checkbox" class="relation-filter" value="elaboration" checked>
+                    补充说明
+                </label>
+            </div>
+
+            <div class="notice">
+                <strong>💡 操作提示</strong><br>
+                • 拖动节点改变位置<br>
+                • 滚轮缩放视图<br>
+                • 悬停节点查看详情<br>
+                • <strong>双击节点跳转到原文</strong><br>
+                • 使用筛选器控制显示的关系类型
+            </div>
+        </div>
+
+        <div id="graph"></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="network.fit()">适应视图</button>
+        <button class="btn" onclick="resetLayout()">重置布局</button>
+        <button class="btn" onclick="togglePhysics()">切换物理引擎</button>
+    </div>
+
+    <script>
+        // 数据
+        const nodesData = [
+  {
+    "id": "1",
+    "label": "1\\n黄帝出身",
+    "title": "[1] 黄帝出身\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n黄帝者，少典之子，姓公孙，名曰轩辕。生而神灵，弱而能言，幼而徇齐，长而敦敏，成而聪明。",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.43,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "1.1",
+    "label": "1.1\\n征伐诸侯",
+    "title": "[1.1] 征伐诸侯\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n轩辕之时，神农氏世衰。诸侯相，暴虐百姓，而神农氏弗能征。於是轩辕乃习用干戈，以征不享，诸侯咸来宾从。而蚩尤最为暴，莫能。炎帝欲陵诸侯，诸侯咸归轩辕。轩辕乃修德振...",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 21.24,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "1.2",
+    "label": "1.2\\n擒蚩尤",
+    "title": "[1.2] 擒蚩尤\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n蚩尤作乱，不用帝命。於是黄帝乃徵师诸侯，与蚩尤於涿鹿之野，遂蚩尤。",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.33,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "1.3",
+    "label": "1.3\\n为天子",
+    "title": "[1.3] 为天子\\n章节: 黄帝\\n小节: 兴起与征讨\\n\\n而诸侯咸尊轩辕为天子，代神农氏，是为黄帝。天下有不顺者，黄帝从而征之，平者去之，披山通道，未尝宁居。",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.5,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "3",
+    "label": "3\\n治理天下",
+    "title": "[3] 治理天下\\n章节: 黄帝\\n小节: 疆域与治理\\n\\n迁徙往来无常处，以师兵为营卫。官名皆以云命，为云师。置左右大监，监于万国。万国和，而鬼神山川封禅与为多焉。获宝鼎，迎日推筴。举风后、力牧、常先、大鸿以治民。顺天...",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 21.51,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "4",
+    "label": "4\\n黄帝子嗣",
+    "title": "[4] 黄帝子嗣\\n章节: 黄帝\\n小节: 疆域与治理\\n\\n黄帝二十五子，其得姓者十四人。",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.15,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "4.1",
+    "label": "4.1\\n嫘祖二子",
+    "title": "[4.1] 嫘祖二子\\n章节: 黄帝\\n小节: 后裔与世系\\n\\n黄帝居轩辕之丘，而娶於西陵之女，是为嫘祖。嫘祖为黄帝正妃，生二子，其後皆有天下：",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.4,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "4.2",
+    "label": "4.2\\n黄帝崩",
+    "title": "[4.2] 黄帝崩\\n章节: 黄帝\\n小节: 后裔与世系\\n\\n黄帝崩，葬桥山。其孙昌意之子高阳立，是为帝颛顼也。",
+    "group": "黄帝",
+    "color": "#FFD700",
+    "size": 20.25,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "5",
+    "label": "5\\n颛顼德行",
+    "title": "[5] 颛顼德行\\n章节: 帝颛顼\\n\\n帝颛顼高阳者，黄帝之孙而昌意之子也。静渊以有谋，疏通而知事；养材以任地，载时以象天，依鬼神以制义，治气以教化，絜诚以祭祀。",
+    "group": "帝颛顼",
+    "color": "#87CEEB",
+    "size": 20.61,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "6",
+    "label": "6\\n颛顼崩",
+    "title": "[6] 颛顼崩\\n章节: 帝颛顼\\n\\n帝颛顼生子曰穷蝉。颛顼崩，而玄嚣之孙高辛立，是为帝喾。",
+    "group": "帝颛顼",
+    "color": "#87CEEB",
+    "size": 20.27,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "7",
+    "label": "7\\n帝喾世系",
+    "title": "[7] 帝喾世系\\n章节: 帝喾\\n\\n帝喾高辛者，黄帝之曾孙也。高辛父曰蟜极，蟜极父曰玄嚣，玄嚣父曰黄帝。自玄嚣与蟜极皆不得在位，至高辛即帝位。高辛於颛顼为族子。",
+    "group": "帝喾",
+    "color": "#98FB98",
+    "size": 20.62,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "8",
+    "label": "8\\n帝喾德行",
+    "title": "[8] 帝喾德行\\n章节: 帝喾\\n\\n高辛生而神灵，自言其名。普施利物，不於其身。聪以知远，明以察微。顺天之义，知民之急。仁而威，惠而信，脩身而天下服。",
+    "group": "帝喾",
+    "color": "#98FB98",
+    "size": 20.57,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "9",
+    "label": "9\\n帝喾崩",
+    "title": "[9] 帝喾崩\\n章节: 帝喾\\n\\n帝喾娶陈锋氏女，生放勋。娶娵訾氏女，生挚。帝喾崩，而挚代立。帝挚立，不善，而弟放勋立，是为帝尧。",
+    "group": "帝喾",
+    "color": "#98FB98",
+    "size": 20.48,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "10",
+    "label": "10\\n帝尧德行",
+    "title": "[10] 帝尧德行\\n章节: 帝尧\\n小节: 钦明文思\\n\\n帝尧者，放勋。其仁如天，其知如神。就之如日，望之如云。富而不骄，贵而不舒。黄收纯衣，彤车乘白马。能明驯德，以亲九族。九族既睦，便章百姓。百姓昭明，合和万国。",
+    "group": "帝尧",
+    "color": "#FFA07A",
+    "size": 20.78,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "11",
+    "label": "11\\n制定历法",
+    "title": "[11] 制定历法\\n章节: 帝尧\\n小节: 历法与农时\\n\\n乃命羲、和，敬顺昊天，数法日月星辰，敬授民时。",
+    "group": "帝尧",
+    "color": "#FFA07A",
+    "size": 20.23,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "11.5",
+    "label": "11.5\\n闰月四时",
+    "title": "[11.5] 闰月四时\\n章节: 帝尧\\n小节: 历法与农时\\n\\n岁三百六十六日，以闰月正四时。信饬百官，众功皆兴。",
+    "group": "帝尧",
+    "color": "#FFA07A",
+    "size": 20.25,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "13.8",
+    "label": "13.8\\n尧选舜",
+    "title": "[13.8] 尧选舜\\n章节: 帝尧\\n小节: 禅让之始\\n\\n於是尧妻之二女，观其德於二女。舜饬下二女於妫汭，如妇礼。尧善之，乃使舜慎和五典，五典能从。乃遍入百官，百官时序。宾於四门，四门穆穆，诸侯远方宾客皆敬。尧使舜入山...",
+    "group": "帝尧",
+    "color": "#FFA07A",
+    "size": 21.51,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "14",
+    "label": "14\\n舜摄政",
+    "title": "[14] 舜摄政\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n於是帝尧老，命舜摄行天子之政，以观天命。舜乃在璿玑玉衡，以齐七政。遂类于上帝，禋于六宗，望于山川，辩于群神。揖五瑞，择吉月日，见四岳诸牧，班瑞。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.72,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "14.1",
+    "label": "14.1\\n巡狩礼制",
+    "title": "[14.1] 巡狩礼制\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n岁二月，东巡狩，至於岱宗，祡，望秩於山川。遂见东方君长，合时月正日，同律度量衡，脩五礼五玉三帛二生一死为挚，如五器，卒乃复。五月，南巡狩；八月，西巡狩；十一月，...",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 21.01,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "14.2",
+    "label": "14.2\\n刑法教化",
+    "title": "[14.2] 刑法教化\\n章节: 帝舜\\n小节: 摄政与礼法\\n\\n五岁一巡狩，群后四朝。遍告以言，明试以功，车服以庸。肇十有二州，决川。象以典刑，流宥五刑，鞭作官刑，扑作教刑，金作赎刑。眚灾过，；怙终贼，。钦哉，钦哉，惟刑之静...",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.82,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "15",
+    "label": "15\\n惩四罪",
+    "title": "[15] 惩四罪\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n讙兜进言共工，尧曰不可而试之工师，共工果淫辟。四岳举鲧治鸿水，尧以为不可，岳彊请试之，试之而无功，故百姓不便。三苗在江淮、荆州数为乱。於是舜归而言於帝，",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.76,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "15.5",
+    "label": "15.5\\n天下服",
+    "title": "[15.5] 天下服\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n四罪而天下咸服。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.08,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "16",
+    "label": "16\\n尧崩",
+    "title": "[16] 尧崩\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧立七十年得舜，二十年而老，令舜摄行天子之政，荐之於天。尧辟位凡二十八年而崩。百姓悲哀，如丧父母。三年，四方莫举乐，以思尧。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.62,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "16.1",
+    "label": "16.1\\n授舜天下",
+    "title": "[16.1] 授舜天下\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧知子丹硃之不肖，不足授天下，於是乃权授舜。授舜，则天下得其利而丹硃病；授丹硃，则天下病而丹硃得其利。尧曰\"终不以天下之病而利一人\"，而卒授舜以天下。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.75,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "16.2",
+    "label": "16.2\\n舜让辟",
+    "title": "[16.2] 舜让辟\\n章节: 帝舜\\n小节: 惩办四罪\\n\\n尧崩，三年之丧毕，舜让辟丹硃於南河之南。诸侯朝觐者不之丹硃而之舜，狱讼者不之丹硃而之舜，讴歌者不讴歌丹硃而讴歌舜。舜曰\"天也\"，夫而後之中国践天子位焉，是为帝舜...",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.81,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "17",
+    "label": "17\\n舜世系",
+    "title": "[17] 舜世系\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n虞舜者，名曰重华。重华父曰瞽叟，瞽叟父曰桥牛，桥牛父曰句望，句望父曰敬康，敬康父曰穷蝉，穷蝉父曰帝颛顼，颛顼父曰昌意：以至舜七世矣。自从穷蝉以至帝舜，皆微为庶人...",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.81,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "18",
+    "label": "18\\n父弟欲杀",
+    "title": "[18] 父弟欲杀\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜父瞽叟盲，而舜母死，瞽叟更娶妻而生象，象傲。瞽叟爱後妻子，常欲舜，舜避逃；及有小过，则受罪。顺事父及後母与弟，日以笃谨，匪有解。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.65,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "19",
+    "label": "19\\n舜事亲孝",
+    "title": "[19] 舜事亲孝\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜，冀州之人也。舜耕历山，渔雷泽，陶河滨，作什器於寿丘，就时於负夏。舜父瞽叟顽，母嚚，弟象傲，皆欲舜。舜顺適不失子道，兄弟孝慈。欲，不可得；即求，尝在侧。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.77,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "20",
+    "label": "20\\n尧妻二女",
+    "title": "[20] 尧妻二女\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜年二十以孝闻。三十而帝尧问可用者，四岳咸荐虞舜，曰可。於是尧乃以二女妻舜以观其内，使九男与处以观其外。舜居妫汭，内行弥谨。尧二女不敢以贵骄事舜亲戚，甚有妇道。...",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 21.61,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "20.1",
+    "label": "20.1\\n焚廪脱险",
+    "title": "[20.1] 焚廪脱险\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n瞽叟尚复欲之，使舜上涂廪，瞽叟从下纵火焚廪。舜乃以两笠自扞而下，去，得不死。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.38,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "20.2",
+    "label": "20.2\\n实井逃生",
+    "title": "[20.2] 实井逃生\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n後瞽叟又使舜穿井，舜穿井为匿空旁出。舜既入深，瞽叟与象共下土实井，舜从匿空出，去。瞽叟、象喜，以舜为已死。",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.53,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "20.3",
+    "label": "20.3\\n复事瞽叟",
+    "title": "[20.3] 复事瞽叟\\n章节: 帝舜\\n小节: 德行与磨难\\n\\n舜复事瞽叟爱弟弥谨。於是尧乃试舜五典百官，皆治。 :::",
+    "group": "帝舜",
+    "color": "#DDA0DD",
+    "size": 20.28,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "21",
+    "label": "21\\n八恺八元",
+    "title": "[21] 八恺八元\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n昔高阳氏有才子八人，世得其利，谓之\"八恺\"。高辛氏有才子八人，世谓之\"八元\"。此十六族者，世济其美，不陨其名。至於尧，尧未能举。舜举八恺，使主后土，以揆百事，莫...",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 21.16,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "22.6",
+    "label": "22.6\\n流四凶",
+    "title": "[22.6] 流四凶\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n天下恶之，比之三凶。舜宾於四门，乃流四凶族，迁于四裔，以御螭魅，於是四门辟，言毋凶人也。",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.44,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "23",
+    "label": "23\\n舜入麓",
+    "title": "[23] 舜入麓\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜入于大麓，烈风雷雨不迷，尧乃知舜之足授天下。尧老，使舜摄行天子政，巡狩。舜得举用事二十年，而尧使摄政。摄政八年而尧崩。三年丧毕，让丹硃，天下归舜。",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.74,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "23.1",
+    "label": "23.1\\n举十贤",
+    "title": "[23.1] 举十贤\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n而禹、皋陶、契、后稷、伯夷、夔、龙、倕、益、彭祖自尧时而皆举用，未有分职。於是舜乃至於文祖，谋于四岳，辟四门，明通四方耳目，命十二牧论帝德，行厚德，远佞人，则蛮...",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.84,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "23.2",
+    "label": "23.2\\n分职任能",
+    "title": "[23.2] 分职任能\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜谓四岳曰：“有能奋庸美尧之事者，使居官相事？”",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.24,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "23.3",
+    "label": "23.3\\n三年考功",
+    "title": "[23.3] 三年考功\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜曰：\"嗟！女二十有二人，敬哉，惟时相天事。\"三岁一考功，三考绌陟，远近众功咸兴。分北三苗。",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.46,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "24",
+    "label": "24\\n群臣成功",
+    "title": "[24] 群臣成功\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n此二十二人咸成厥功：",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.1,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "25",
+    "label": "25\\n舜崩",
+    "title": "[25] 舜崩\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜年二十以孝闻，年三十尧举之，年五十摄行天子事，年五十八尧崩，年六十一代尧践帝位。践帝位三十九年，南巡狩，崩於苍梧之野。葬於江南九疑，是为零陵。",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.72,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "25.1",
+    "label": "25.1\\n舜让禹",
+    "title": "[25.1] 舜让禹\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n舜之践帝位，载天子旗，往朝父瞽叟，夔夔唯谨，如子道。封弟象为诸侯。舜子商均亦不肖，舜乃豫荐禹於天。十七年而崩。三年丧毕，禹亦乃让舜子，如舜让尧子。诸侯归之，然後...",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.86,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "25.2",
+    "label": "25.2\\n不敢专",
+    "title": "[25.2] 不敢专\\n章节: 举贤任能\\n小节: 举贤任能\\n\\n尧子丹硃，舜子商均，皆有疆土，以奉先祀。服其服，礼乐如之。以客见天子，天子弗臣，示不敢专也。",
+    "group": "举贤任能",
+    "color": "#F0E68C",
+    "size": 20.46,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "26",
+    "label": "26\\n五帝世系",
+    "title": "[26] 五帝世系\\n章节: 五帝\\n\\n自黄帝至舜、禹，皆同姓而异其国号，以章明德。",
+    "group": "五帝",
+    "color": "#E0E0E0",
+    "size": 20.22,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  },
+  {
+    "id": "27",
+    "label": "27\\n太史公曰",
+    "title": "[27] 太史公曰\\n章节: 太史公\\n\\n太史公曰：学者多称五帝，尚矣。然〖{尚书〗独载尧以来；而百家言黄帝，其文不雅驯，荐绅先生难言之。孔子所传宰予问五帝德及帝系姓，儒者或不传。余尝西至空桐，北过涿鹿...",
+    "group": "太史公",
+    "color": "#D3D3D3",
+    "size": 22.23,
+    "font": {
+      "size": 10,
+      "color": "#000"
+    }
+  }
+];
+        const edgesData = [
+  {
+    "id": "edge_1",
+    "from": "1",
+    "to": "1.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1-1.1"
+  },
+  {
+    "id": "edge_2",
+    "from": "1",
+    "to": "3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1-3"
+  },
+  {
+    "id": "edge_3",
+    "from": "1.1",
+    "to": "1.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.1-1.2"
+  },
+  {
+    "id": "edge_4",
+    "from": "1.1",
+    "to": "1.2",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.1-1.2"
+  },
+  {
+    "id": "edge_5",
+    "from": "1.1",
+    "to": "3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.1-3"
+  },
+  {
+    "id": "edge_6",
+    "from": "1.1",
+    "to": "3",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.1-3"
+  },
+  {
+    "id": "edge_7",
+    "from": "1.1",
+    "to": "4",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.1-4"
+  },
+  {
+    "id": "edge_8",
+    "from": "1.2",
+    "to": "1.3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.2-1.3"
+  },
+  {
+    "id": "edge_9",
+    "from": "1.2",
+    "to": "3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.2-3"
+  },
+  {
+    "id": "edge_10",
+    "from": "1.2",
+    "to": "3",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.2-3"
+  },
+  {
+    "id": "edge_11",
+    "from": "1.2",
+    "to": "4",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.2-4"
+  },
+  {
+    "id": "edge_12",
+    "from": "1.2",
+    "to": "4.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.2-4.1"
+  },
+  {
+    "id": "edge_13",
+    "from": "1.3",
+    "to": "3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.3-3"
+  },
+  {
+    "id": "edge_14",
+    "from": "1.3",
+    "to": "4",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.3-4"
+  },
+  {
+    "id": "edge_15",
+    "from": "1.3",
+    "to": "4.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.3-4.1"
+  },
+  {
+    "id": "edge_16",
+    "from": "1.3",
+    "to": "4.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1.3-4.2"
+  },
+  {
+    "id": "edge_17",
+    "from": "3",
+    "to": "4",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "3-4"
+  },
+  {
+    "id": "edge_18",
+    "from": "3",
+    "to": "4.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "3-4.1"
+  },
+  {
+    "id": "edge_19",
+    "from": "3",
+    "to": "4.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "3-4.2"
+  },
+  {
+    "id": "edge_20",
+    "from": "4",
+    "to": "4.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "4-4.1"
+  },
+  {
+    "id": "edge_21",
+    "from": "4",
+    "to": "4.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "4-4.2"
+  },
+  {
+    "id": "edge_22",
+    "from": "4.1",
+    "to": "4.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "4.1-4.2"
+  },
+  {
+    "id": "edge_23",
+    "from": "4.2",
+    "to": "6",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "帝王世系继承",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "4.2-6"
+  },
+  {
+    "id": "edge_24",
+    "from": "5",
+    "to": "6",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "5-6"
+  },
+  {
+    "id": "edge_25",
+    "from": "6",
+    "to": "9",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "帝王世系继承",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "6-9"
+  },
+  {
+    "id": "edge_26",
+    "from": "7",
+    "to": "8",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "7-8"
+  },
+  {
+    "id": "edge_27",
+    "from": "8",
+    "to": "9",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "8-9"
+  },
+  {
+    "id": "edge_28",
+    "from": "9",
+    "to": "11",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "9-11"
+  },
+  {
+    "id": "edge_29",
+    "from": "9",
+    "to": "11.5",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "9-11.5"
+  },
+  {
+    "id": "edge_30",
+    "from": "9",
+    "to": "13.8",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "9-13.8"
+  },
+  {
+    "id": "edge_31",
+    "from": "10",
+    "to": "11",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-11"
+  },
+  {
+    "id": "edge_32",
+    "from": "10",
+    "to": "11.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-11.5"
+  },
+  {
+    "id": "edge_33",
+    "from": "10",
+    "to": "13.8",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-13.8"
+  },
+  {
+    "id": "edge_34",
+    "from": "11",
+    "to": "11.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "11-11.5"
+  },
+  {
+    "id": "edge_35",
+    "from": "11",
+    "to": "13.8",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "11-13.8"
+  },
+  {
+    "id": "edge_36",
+    "from": "11.5",
+    "to": "13.8",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "11.5-13.8"
+  },
+  {
+    "id": "edge_37",
+    "from": "14",
+    "to": "14.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14-14.1"
+  },
+  {
+    "id": "edge_38",
+    "from": "14",
+    "to": "15",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14-15"
+  },
+  {
+    "id": "edge_39",
+    "from": "14",
+    "to": "15.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14-15.5"
+  },
+  {
+    "id": "edge_40",
+    "from": "14.1",
+    "to": "14.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.1-14.2"
+  },
+  {
+    "id": "edge_41",
+    "from": "14.1",
+    "to": "15",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.1-15"
+  },
+  {
+    "id": "edge_42",
+    "from": "14.1",
+    "to": "15.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.1-15.5"
+  },
+  {
+    "id": "edge_43",
+    "from": "14.1",
+    "to": "16",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.1-16"
+  },
+  {
+    "id": "edge_44",
+    "from": "14.2",
+    "to": "15",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.2-15"
+  },
+  {
+    "id": "edge_45",
+    "from": "14.2",
+    "to": "15.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.2-15.5"
+  },
+  {
+    "id": "edge_46",
+    "from": "14.2",
+    "to": "16",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.2-16"
+  },
+  {
+    "id": "edge_47",
+    "from": "14.2",
+    "to": "16.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14.2-16.1"
+  },
+  {
+    "id": "edge_48",
+    "from": "15",
+    "to": "15.5",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "15-15.5"
+  },
+  {
+    "id": "edge_49",
+    "from": "15",
+    "to": "16.1",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "15-16.1"
+  },
+  {
+    "id": "edge_50",
+    "from": "15.5",
+    "to": "16",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "15.5-16"
+  },
+  {
+    "id": "edge_51",
+    "from": "15.5",
+    "to": "17",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "15.5-17"
+  },
+  {
+    "id": "edge_52",
+    "from": "16",
+    "to": "16.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16-16.1"
+  },
+  {
+    "id": "edge_53",
+    "from": "16",
+    "to": "17",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16-17"
+  },
+  {
+    "id": "edge_54",
+    "from": "16",
+    "to": "18",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16-18"
+  },
+  {
+    "id": "edge_55",
+    "from": "16.1",
+    "to": "16.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.1-16.2"
+  },
+  {
+    "id": "edge_56",
+    "from": "16.1",
+    "to": "17",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.1-17"
+  },
+  {
+    "id": "edge_57",
+    "from": "16.1",
+    "to": "18",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.1-18"
+  },
+  {
+    "id": "edge_58",
+    "from": "16.1",
+    "to": "19",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.1-19"
+  },
+  {
+    "id": "edge_59",
+    "from": "16.2",
+    "to": "17",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.2-17"
+  },
+  {
+    "id": "edge_60",
+    "from": "16.2",
+    "to": "18",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.2-18"
+  },
+  {
+    "id": "edge_61",
+    "from": "16.2",
+    "to": "19",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.2-19"
+  },
+  {
+    "id": "edge_62",
+    "from": "16.2",
+    "to": "20",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一大节内的时间顺序",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "16.2-20"
+  },
+  {
+    "id": "edge_63",
+    "from": "17",
+    "to": "18",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "17-18"
+  },
+  {
+    "id": "edge_64",
+    "from": "18",
+    "to": "19",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "18-19"
+  },
+  {
+    "id": "edge_65",
+    "from": "18",
+    "to": "20",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "18-20"
+  },
+  {
+    "id": "edge_66",
+    "from": "19",
+    "to": "20",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "19-20"
+  },
+  {
+    "id": "edge_67",
+    "from": "19",
+    "to": "20",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "19-20"
+  },
+  {
+    "id": "edge_68",
+    "from": "19",
+    "to": "20.3",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "19-20.3"
+  },
+  {
+    "id": "edge_69",
+    "from": "20",
+    "to": "20.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "20-20.1"
+  },
+  {
+    "id": "edge_70",
+    "from": "20.1",
+    "to": "20.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "20.1-20.2"
+  },
+  {
+    "id": "edge_71",
+    "from": "20.1",
+    "to": "20.3",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "20.1-20.3"
+  },
+  {
+    "id": "edge_72",
+    "from": "20.1",
+    "to": "22.6",
+    "color": "#e74c3c",
+    "width": 3,
+    "title": "前因后果关系",
+    "label": "因果",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e74c3c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "20.1-22.6"
+  },
+  {
+    "id": "edge_73",
+    "from": "20.2",
+    "to": "20.3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "20.2-20.3"
+  },
+  {
+    "id": "edge_74",
+    "from": "21",
+    "to": "22.6",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "21-22.6"
+  },
+  {
+    "id": "edge_75",
+    "from": "22.6",
+    "to": "23",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "22.6-23"
+  },
+  {
+    "id": "edge_76",
+    "from": "23",
+    "to": "23.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "23-23.1"
+  },
+  {
+    "id": "edge_77",
+    "from": "23.1",
+    "to": "23.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "23.1-23.2"
+  },
+  {
+    "id": "edge_78",
+    "from": "23.2",
+    "to": "23.3",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "23.2-23.3"
+  },
+  {
+    "id": "edge_79",
+    "from": "23.3",
+    "to": "24",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "23.3-24"
+  },
+  {
+    "id": "edge_80",
+    "from": "24",
+    "to": "25",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "24-25"
+  },
+  {
+    "id": "edge_81",
+    "from": "25",
+    "to": "25.1",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "25-25.1"
+  },
+  {
+    "id": "edge_82",
+    "from": "25.1",
+    "to": "25.2",
+    "color": "#999999",
+    "width": 5,
+    "title": "同一小节内的紧密承接",
+    "label": "时序",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#999999",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "25.1-25.2"
+  },
+  {
+    "id": "edge_83",
+    "from": "1",
+    "to": "26",
+    "color": "#3498db",
+    "width": 2,
+    "title": "世系总结对应黄帝章节开始",
+    "label": "总分",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#3498db",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1-26",
+    "dashes": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": "edge_84",
+    "from": "5",
+    "to": "26",
+    "color": "#3498db",
+    "width": 2,
+    "title": "世系总结包含颛顼",
+    "label": "总分",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#3498db",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "5-26",
+    "dashes": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": "edge_85",
+    "from": "7",
+    "to": "26",
+    "color": "#3498db",
+    "width": 2,
+    "title": "世系总结包含帝喾",
+    "label": "总分",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#3498db",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "7-26",
+    "dashes": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": "edge_86",
+    "from": "10",
+    "to": "26",
+    "color": "#3498db",
+    "width": 2,
+    "title": "世系总结包含帝尧",
+    "label": "总分",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#3498db",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-26",
+    "dashes": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": "edge_87",
+    "from": "14",
+    "to": "26",
+    "color": "#3498db",
+    "width": 2,
+    "title": "世系总结包含帝舜",
+    "label": "总分",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#3498db",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14-26",
+    "dashes": [
+      5,
+      5
+    ]
+  },
+  {
+    "id": "edge_88",
+    "from": "1",
+    "to": "27",
+    "color": "#95a5a6",
+    "width": 2,
+    "title": "史家评论全篇（黄帝）",
+    "label": "评论",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#95a5a6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1-27",
+    "dashes": [
+      2,
+      2
+    ]
+  },
+  {
+    "id": "edge_89",
+    "from": "10",
+    "to": "27",
+    "color": "#95a5a6",
+    "width": 2,
+    "title": "史家评论全篇（尧）",
+    "label": "评论",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#95a5a6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-27",
+    "dashes": [
+      2,
+      2
+    ]
+  },
+  {
+    "id": "edge_90",
+    "from": "14",
+    "to": "27",
+    "color": "#95a5a6",
+    "width": 2,
+    "title": "史家评论全篇（舜）",
+    "label": "评论",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#95a5a6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "14-27",
+    "dashes": [
+      2,
+      2
+    ]
+  },
+  {
+    "id": "edge_91",
+    "from": "21",
+    "to": "22.6",
+    "color": "#e67e22",
+    "width": 3,
+    "title": "贤才与不才的对比",
+    "label": "对比",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e67e22",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "21-22.6"
+  },
+  {
+    "id": "edge_92",
+    "from": "18",
+    "to": "20",
+    "color": "#e67e22",
+    "width": 3,
+    "title": "逆境与美德的对比",
+    "label": "对比",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#e67e22",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "18-20"
+  },
+  {
+    "id": "edge_93",
+    "from": "4.2",
+    "to": "5",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "黄帝传位给颛顼",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "4.2-5"
+  },
+  {
+    "id": "edge_94",
+    "from": "6",
+    "to": "7",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "颛顼传位给帝喾",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "6-7"
+  },
+  {
+    "id": "edge_95",
+    "from": "9",
+    "to": "10",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "帝喾传位给帝尧",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "9-10"
+  },
+  {
+    "id": "edge_96",
+    "from": "13.8",
+    "to": "14",
+    "color": "#9b59b6",
+    "width": 4,
+    "title": "禅让：尧传位给舜",
+    "label": "世系",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#9b59b6",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "13.8-14"
+  },
+  {
+    "id": "edge_97",
+    "from": "11",
+    "to": "11.5",
+    "color": "#1abc9c",
+    "width": 2,
+    "title": "历法总述与详细说明",
+    "label": "补充",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#1abc9c",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "11-11.5"
+  },
+  {
+    "id": "edge_98",
+    "from": "1",
+    "to": "5",
+    "color": "#2ecc71",
+    "width": 2,
+    "title": "五帝并列：黄帝与颛顼",
+    "label": "并列",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#2ecc71",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "1-5",
+    "dashes": [
+      10,
+      5
+    ]
+  },
+  {
+    "id": "edge_99",
+    "from": "5",
+    "to": "7",
+    "color": "#2ecc71",
+    "width": 2,
+    "title": "五帝并列：颛顼与帝喾",
+    "label": "并列",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#2ecc71",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "5-7",
+    "dashes": [
+      10,
+      5
+    ]
+  },
+  {
+    "id": "edge_100",
+    "from": "7",
+    "to": "10",
+    "color": "#2ecc71",
+    "width": 2,
+    "title": "五帝并列：帝喾与帝尧",
+    "label": "并列",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#2ecc71",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "7-10",
+    "dashes": [
+      10,
+      5
+    ]
+  },
+  {
+    "id": "edge_101",
+    "from": "10",
+    "to": "14",
+    "color": "#2ecc71",
+    "width": 2,
+    "title": "五帝并列：帝尧与帝舜",
+    "label": "并列",
+    "arrows": "to",
+    "smooth": {
+      "type": "curvedCW",
+      "roundness": 0.2
+    },
+    "font": {
+      "size": 9,
+      "color": "#2ecc71",
+      "strokeWidth": 0,
+      "align": "top",
+      "background": "rgba(255,255,255,0.7)",
+      "vadjust": -5
+    },
+    "original_key": "10-14",
+    "dashes": [
+      10,
+      5
+    ]
+  }
+];
+
+        // 创建数据集
+        const nodes = new vis.DataSet(nodesData);
+        const edges = new vis.DataSet(edgesData);
+
+        // 网络配置
+        const options = {
+            nodes: {
+                shape: 'circle',  // 使用circle而不是dot，可以在内部显示文字
+                borderWidth: 2,
+                borderWidthSelected: 4,
+                shadow: true,
+                font: {
+                    size: 10,
+                    color: '#000',
+                    face: 'arial',
+                    vadjust: 0
+                },
+                labelHighlightBold: false
+            },
+            edges: {
+                smooth: {
+                    type: 'curvedCW',
+                    roundness: 0.2
+                },
+                arrows: {
+                    to: {
+                        enabled: true,
+                        scaleFactor: 0.5
+                    }
+                },
+                shadow: true
+            },
+            physics: {
+                enabled: true,
+                stabilization: {
+                    enabled: true,
+                    iterations: 500,
+                    updateInterval: 25,
+                    fit: true
+                }
+            },
+            layout: {
+                improvedLayout: true
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 100,
+                navigationButtons: true,
+                keyboard: true
+            }
+        };
+
+        // 创建网络
+        const container = document.getElementById('graph');
+        console.log('Container:', container);
+        console.log('Nodes count:', nodesData.length);
+        console.log('Edges count:', edgesData.length);
+
+        const data = {
+            nodes: nodes,
+            edges: edges
+        };
+        const network = new vis.Network(container, data, options);
+
+        console.log('Network created');
+
+        // 网络初始化完成后适应视图
+        network.once('afterDrawing', function() {
+            console.log('First drawing complete');
+            network.fit();
+        });
+
+        // 鼠标悬停效果：根据距离调整节点和边的透明度
+        let hoveredNodeId = null;
+
+        network.on("hoverNode", function(params) {
+            hoveredNodeId = params.node;
+            updateNodesAndEdgesOpacity(hoveredNodeId);
+        });
+
+        network.on("blurNode", function(params) {
+            hoveredNodeId = null;
+            resetNodesAndEdgesOpacity();
+        });
+
+        // 计算图中两个节点之间的最短路径距离（BFS）
+        function getShortestDistance(fromNode, toNode) {
+            if (fromNode === toNode) return 0;
+
+            const visited = new Set();
+            const queue = [{node: fromNode, distance: 0}];
+            visited.add(fromNode);
+
+            while (queue.length > 0) {
+                const {node, distance} = queue.shift();
+
+                // 获取当前节点的所有邻居
+                const connectedEdges = edgesData.filter(e => e.from === node || e.to === node);
+                for (const edge of connectedEdges) {
+                    const neighbor = edge.from === node ? edge.to : edge.from;
+                    if (neighbor === toNode) {
+                        return distance + 1;
+                    }
+                    if (!visited.has(neighbor)) {
+                        visited.add(neighbor);
+                        queue.push({node: neighbor, distance: distance + 1});
+                    }
+                }
+            }
+
+            return Infinity; // 不连通
+        }
+
+        function updateNodesAndEdgesOpacity(hoveredId) {
+            // 计算所有节点到悬停节点的距离
+            const distances = {};
+            let maxDistance = 0;
+
+            nodesData.forEach(node => {
+                const dist = getShortestDistance(hoveredId, node.id);
+                distances[node.id] = dist;
+                if (dist !== Infinity && dist > maxDistance) {
+                    maxDistance = dist;
+                }
+            });
+
+            // 更新节点透明度
+            const updatedNodes = nodesData.map(node => {
+                const dist = distances[node.id];
+                let opacity = 1.0;
+
+                if (dist === 0) {
+                    opacity = 1.0; // 悬停节点自己
+                } else if (dist === Infinity) {
+                    opacity = 0.1; // 不连通的节点
+                } else {
+                    // 根据距离计算透明度：距离越远越淡
+                    opacity = Math.max(0.15, 1.0 - (dist / (maxDistance + 1)) * 0.85);
+                }
+
+                return {
+                    id: node.id,
+                    opacity: opacity
+                };
+            });
+
+            nodes.update(updatedNodes);
+
+            // 更新边的透明度和宽度
+            const updatedEdges = edgesData.map(edge => {
+                const fromDist = distances[edge.from] || Infinity;
+                const toDist = distances[edge.to] || Infinity;
+
+                // 直接相关的边（距离为0-1之间）
+                const isDirect = (fromDist === 0 && toDist === 1) || (fromDist === 1 && toDist === 0);
+
+                let opacity, width;
+                if (isDirect) {
+                    opacity = 1.0;
+                    width = edge.width * 2; // 加粗
+                } else {
+                    // 根据两端节点的最近距离计算透明度
+                    const minDist = Math.min(fromDist, toDist);
+                    if (minDist === Infinity) {
+                        opacity = 0.05;
+                    } else {
+                        opacity = Math.max(0.1, 1.0 - (minDist / (maxDistance + 1)) * 0.9);
+                    }
+                    width = edge.width;
+                }
+
+                return {
+                    id: edge.id,  // 使用边的唯一ID
+                    opacity: opacity,
+                    width: width
+                };
+            });
+
+            edges.update(updatedEdges);
+        }
+
+        function resetNodesAndEdgesOpacity() {
+            // 恢复所有节点
+            const updatedNodes = nodesData.map(node => ({
+                id: node.id,
+                opacity: 1.0
+            }));
+            nodes.update(updatedNodes);
+
+            // 恢复所有边
+            const updatedEdges = edgesData.map(edge => ({
+                id: edge.id,  // 使用边的唯一ID
+                opacity: 1.0,
+                width: edge.width
+            }));
+            edges.update(updatedEdges);
+        }
+
+        // 物理引擎开关
+        let physicsEnabled = true;
+        function togglePhysics() {
+            physicsEnabled = !physicsEnabled;
+            network.setOptions({ physics: { enabled: physicsEnabled } });
+        }
+
+        // 重置布局
+        function resetLayout() {
+            network.setOptions({ physics: { enabled: true } });
+            setTimeout(() => {
+                network.fit();
+            }, 1000);
+        }
+
+        // 关系筛选
+        const relationTypeMap = new Map();
+        const colorToType = {
+            '#999999': 'temporal',
+            '#e74c3c': 'causal',
+            '#9b59b6': 'genealogy',
+            '#3498db': 'hierarchy',
+            '#2ecc71': 'parallel',
+            '#e67e22': 'contrast',
+            '#95a5a6': 'meta',
+            '#1abc9c': 'elaboration'
+        };
+
+        edgesData.forEach((edge, index) => {
+            relationTypeMap.set(edge.id, colorToType[edge.color] || 'unknown');
+        });
+
+        document.querySelectorAll('.relation-filter').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const checkedTypes = Array.from(document.querySelectorAll('.relation-filter:checked'))
+                    .map(cb => cb.value);
+
+                const filteredEdges = edgesData.filter(edge => {
+                    const edgeType = relationTypeMap.get(edge.id);
+                    return checkedTypes.includes(edgeType);
+                });
+
+                edges.clear();
+                edges.add(filteredEdges);
+            });
+        });
+
+        // 节点单击事件
+        network.on("selectNode", function(params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                console.log('Selected node:', nodeId);
+            }
+        });
+
+        // 双击节点跳转到段落详情页
+        network.on("doubleClick", function(params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                // 跳转到五帝本纪页面，带锚点
+                const url = '../001_五帝本纪.html#para-' + nodeId;
+                window.open(url, '_blank');
+            }
+        });
+
+        // 稳定后适应视图
+        network.once('stabilized', function() {
+            network.fit();
+        });
+    </script>
+</body>
+</html>

@@ -7,40 +7,16 @@
 import json
 import re
 from pathlib import Path
+import sys
 
-# 实体类型与颜色映射
-ENTITY_COLORS = {
-    '@': ('person', '人名', '#c00'),
-    '=': ('place', '地名', '#080'),
-    '^': ('office', '官职', '#660'),
-    '%': ('time', '时间', '#06c'),
-    '•': ('object', '器物', '#c0c'),
-    '{': ('book', '典籍', '#900'),
-    '&': ('clan', '氏族', '#c60'),
-    "'": ('state', '邦国', '#009'),
-    '~': ('event', '事件', '#690'),
-    '#': ('identity', '身份', '#939'),
-    '+': ('biology', '生物', '#060'),
-    '?': ('myth', '神话', '#939'),
-    ';': ('title', '称号', '#960'),
-    '!': ('concept', '概念', '#069'),
-    '$': ('measure', '度量', '#666'),
-    ':': ('position', '方位', '#093'),
-    '[': ('artifact', '古物', '#c6c'),
-}
+# 导入统一的语义标签处理模块
+sys.path.insert(0, str(Path(__file__).parent))
+from semantic_tags import render_tags_to_html, get_entity_css_styles
+
 
 def render_entity_tags(text):
-    """将实体标注转换为HTML span标签"""
-    for marker, (css_class, title, color) in ENTITY_COLORS.items():
-        # 〖TYPE 内容〗 格式
-        pattern = f'〖{re.escape(marker)}([^〗]+)〗'
-        replacement = f'<span class="entity {css_class}" title="{title}">\\1</span>'
-        text = re.sub(pattern, replacement, text)
-
-    # 处理其他标注（如 〖_xxx〗、〖\\xxx〗）
-    text = re.sub(r'〖[_\\]([^〗]+)〗', r'<span class="entity other" title="其他标注">\1</span>', text)
-
-    return text
+    """将实体标注转换为HTML span标签（使用统一标准）"""
+    return render_tags_to_html(text, normalize_legacy=True)
 
 def highlight_chengyu_in_original(original_text, chengyu_name):
     """
@@ -250,6 +226,7 @@ def generate_html(json_path, output_path):
             font-style: italic;
         }
 
+        /* 使用统一的实体标注样式 */
         .entity {
             font-weight: 500;
             border-bottom: 1px dotted;
@@ -257,22 +234,11 @@ def generate_html(json_path, output_path):
         }
 
         .entity.person { color: #c00; border-bottom-color: #c00; }
+        .entity.time { color: #06c; border-bottom-color: #06c; }
         .entity.place { color: #080; border-bottom-color: #080; }
         .entity.office { color: #660; border-bottom-color: #660; }
-        .entity.time { color: #06c; border-bottom-color: #06c; }
-        .entity.object { color: #c0c; border-bottom-color: #c0c; }
-        .entity.book { color: #900; border-bottom-color: #900; }
-        .entity.clan { color: #c60; border-bottom-color: #c60; }
-        .entity.state { color: #009; border-bottom-color: #009; }
-        .entity.event { color: #690; border-bottom-color: #690; }
-        .entity.identity { color: #939; border-bottom-color: #939; }
-        .entity.biology { color: #060; border-bottom-color: #060; }
-        .entity.myth { color: #939; border-bottom-color: #939; }
-        .entity.title { color: #960; border-bottom-color: #960; }
-        .entity.concept { color: #069; border-bottom-color: #069; }
-        .entity.measure { color: #666; border-bottom-color: #666; }
-        .entity.position { color: #093; border-bottom-color: #093; }
-        .entity.artifact { color: #c6c; border-bottom-color: #c6c; }
+        .entity.war { color: #690; border-bottom-color: #690; }
+        .entity.ref { color: #999; border-bottom-color: #999; }
         .entity.other { color: #999; border-bottom-color: #999; }
 
         /* 搜索框样式 */

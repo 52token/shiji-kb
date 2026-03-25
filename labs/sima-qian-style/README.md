@@ -22,14 +22,18 @@ AI会自动读取 `SKILL.md` 并执行三步转换。
 
 ### 方法二：安装到Claude Skills目录（通用方法）
 
-**第1步**：复制整个目录到配置目录
+**第1步**：下载并复制整个目录到配置目录
 
 ```bash
-# Claude Code配置目录通常在：
+# 方式A：如果已clone本项目
 cp -r labs/sima-qian-style ~/.config/claude-code/skills/
 
-# 或者 Codex 配置目录：
-cp -r labs/sima-qian-style ~/.codex/skills/
+# 方式B：直接下载ZIP包（无需clone完整项目）
+# 1. 访问 https://github.com/baojie/shiji-kb/tree/main/labs/sima-qian-style
+# 2. 点击绿色 "Code" 按钮 → "Download ZIP"
+# 3. 解压后复制到：
+#    - Claude Code: ~/.config/claude-code/skills/
+#    - Codex: ~/.codex/skills/
 ```
 
 目录结构：
@@ -98,6 +102,7 @@ AI会自动找到并使用这个SKILL。
 - [示例02：shiji-kb记](evals/example-02-shiji-kb-full.md) - 项目介绍（完整教学版）
 - [示例03：葛底斯堡演讲](evals/example-03-gettysburg.md) - 经典演讲（政治文献）
 - [示例04：论Skill之道](evals/example-04-skill-concept.md) - 技术概念解释
+- [示例05：职场会议记](evals/example-05-workplace-rant.md) - 职场吐槽（阿里黑话转太史公文风）
 
 ---
 
@@ -276,6 +281,7 @@ sima-qian-style/
 - [evals/example-02-shiji-kb-full.md](evals/example-02-shiji-kb-full.md) - shiji-kb记（项目介绍，333字完整版）
 - [evals/example-03-gettysburg.md](evals/example-03-gettysburg.md) - 葛底斯堡演讲（经典政治演讲，272字）
 - [evals/example-04-skill-concept.md](evals/example-04-skill-concept.md) - 论Skill之道（技术概念论说）
+- [evals/example-05-workplace-rant.md](evals/example-05-workplace-rant.md) - 职场会议记（阿里黑话转太史公文风）
 
 每个示例都包含：
 - 完整的三步转换流程
@@ -316,12 +322,11 @@ sima-qian-style/
 
 - 《史记》全文（130篇）- 本项目语料库
 - [inf-xu/author-style-skills](https://github.com/inf-xu/author-style-skills) - 方法论来源
-- 顾颉刚《史记研究》（句法分析）
-- 王国维《史记研究》（文笔评价）
 
 ---
 
 **版本**: v1.0
 **创建日期**: 2026-03-20
-**作者**: 基于《史记》知识库项目提炼
+**作者**: [baojie](https://github.com/baojie) - 基于[《史记》知识库项目](https://github.com/baojie/shiji-kb)提炼
+**项目地址**: https://github.com/baojie/shiji-kb/tree/main/labs/sima-qian-style
 **许可**: CC BY-NC-SA 4.0

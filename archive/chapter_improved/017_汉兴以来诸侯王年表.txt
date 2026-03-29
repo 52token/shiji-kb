@@ -1851,6 +1851,3 @@
 十三
 三十六。来朝。
 二十八。来朝。
-URN
-:
-ctp:shiji/han-xing-yi-lai-zhu-hou

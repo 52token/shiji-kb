@@ -1525,6 +1525,3 @@
 三
 。四年，侯胜有罪，国除。
 四十八
-URN
-:
-ctp:shiji/gao-zu-gong-chen-hou-zhe

@@ -1,6 +1,11 @@
 # 史记知识库 TODO
 
-> 最后更新：2026-03-29
+> 最后更新：2026-03-30
+>
+> **重要说明**：
+> - 本文件保留核心开发任务和执行中的流程任务
+> - 功能建议类任务已迁移至 [GitHub Issues](https://github.com/baojie/shiji-kb/issues)
+> - Issue管理规范见 [SKILL_10a](skills/SKILL_10a_TODO和Issue管理.md)
 
 ---
 
@@ -42,54 +47,102 @@
 
 ---
 
-## ✅ 最新完成 (2026-03-21)
+## 📝 近期转移到Issue的任务
 
-- [x] **为所有SKILL添加YAML frontmatter**：批量为41个SKILL文件添加元数据
-  - ✅ frontmatter包含：name（kebab-case）、title、description三个字段
-  - ✅ 开发 `add_skill_frontmatter.py` 批量处理脚本
-  - 📄 文档：所有 `skills/SKILL_*.md` 文件已更新
+### 2026-03-30: 功能建议大迁移
 
-- [x] **司马迁文风研究实验**：三层SKILL架构完整实现
-  - ✅ 4个SKILL文件（太史公曰、白话转文言、现代名词古化、核心特征）
-  - ✅ 4个完整示例（乔布斯列传、shiji-kb记、葛底斯堡演讲、Skill概念）
-  - 📄 文档：[labs/sima-qian-style/](labs/sima-qian-style/)
+从TODO.md迁移29个任务到GitHub Issues，保持TODO专注于核心开发任务：
 
-- [x] **溯源推理分析实验**：历史事件传播链分析
-  - ✅ 十大故事案例分析（鸿门宴、荆轲刺秦等）
-  - 📄 文档：[skills/SKILL_07d_溯源推理.md](skills/SKILL_07d_溯源推理.md) / [labs/source-inference/](labs/source-inference/)
+**BUG类 (1个)**:
+- [#35](https://github.com/baojie/shiji-kb/issues/35) 【P0】修复被篡改的原文字符
 
-- [x] **参与指南文档**：完整的社区参与流程
-  - 📄 文档：[resources/help/CONTRIBUTING.md](resources/help/CONTRIBUTING.md)
+**FEAT类 - 阅读体验 (12个)**:
+- [#36](https://github.com/baojie/shiji-kb/issues/36) 实体悬浮预览
+- [#37](https://github.com/baojie/shiji-kb/issues/37) 实体索引升级为Concordance
+- [#38](https://github.com/baojie/shiji-kb/issues/38) 段落便签系统
+- [#39](https://github.com/baojie/shiji-kb/issues/39) 句间逻辑关系分析与可视化
+- [#40](https://github.com/baojie/shiji-kb/issues/40) 地铁图换乘设计优化
+- [#41](https://github.com/baojie/shiji-kb/issues/41) 全文搜索功能
+- [#42](https://github.com/baojie/shiji-kb/issues/42) 繁体支持与繁简切换
+- [#43](https://github.com/baojie/shiji-kb/issues/43) 地图联动
+- [#44](https://github.com/baojie/shiji-kb/issues/44) 辞典释义
+- [#45](https://github.com/baojie/shiji-kb/issues/45) 实体颜色系统重设计
+- [#46](https://github.com/baojie/shiji-kb/issues/46) 语法高亮整体设计
+- [#47](https://github.com/baojie/shiji-kb/issues/47) 响应式设计优化（移动端）
 
-- [x] **技术文章《从历史书中探索知识图谱》**：14页PDF完整记录
-  - 📄 文档：[从历史书中探索知识图谱.pdf](resources/publications/draft/从历史书中探索知识图谱.pdf)
+**FEAT类 - 数据与内容 (6个)**:
+- [#48](https://github.com/baojie/shiji-kb/issues/48) 与中华书局版电子版校对
+- [#49](https://github.com/baojie/shiji-kb/issues/49) 韵文识别与排版
+- [#50](https://github.com/baojie/shiji-kb/issues/50) 事件-实体同步更新
+- [#51](https://github.com/baojie/shiji-kb/issues/51) 新实体类型评估
+- [#52](https://github.com/baojie/shiji-kb/issues/52) 事件罗生门（同一事件多章节对比）
+- [#53](https://github.com/baojie/shiji-kb/issues/53) 十表导出CSV
+
+**FEAT类 - 工程与架构 (4个)**:
+- [#54](https://github.com/baojie/shiji-kb/issues/54) 实体标注格式改为非对称标签
+- [#55](https://github.com/baojie/shiji-kb/issues/55) 知识图谱深化：事件关系图谱
+- [#56](https://github.com/baojie/shiji-kb/issues/56) Neo4j图数据库导入
+- [#57](https://github.com/baojie/shiji-kb/issues/57) 自动化测试与CI/CD
+
+**FEAT类 - 未来探索 (6个)**:
+- [#58](https://github.com/baojie/shiji-kb/issues/58) 文献对勘
+- [#59](https://github.com/baojie/shiji-kb/issues/59) 相似事件匹配（向量化检索）
+- [#60](https://github.com/baojie/shiji-kb/issues/60) AI问答（RAG）
+- [#61](https://github.com/baojie/shiji-kb/issues/61) 多维度解构阅读（主题分类）
+- [#62](https://github.com/baojie/shiji-kb/issues/62) 词云生成
+- [#63](https://github.com/baojie/shiji-kb/issues/63) 扩展到二十六史
+
+**查看全部Issues**: [GitHub Issues](https://github.com/baojie/shiji-kb/issues)
 
 ---
 
-## ✅ 历史完成 (2026-03-18)
+## ✅ 近期关闭的Issue（已完成任务归档）
 
-- [x] **动词标注体系 v3.0**：建立完整的动词标注语法，区分动词与名词实体
-  - ✅ 设计新外层符号 `⟦⟧` (数学双方括号) 区分动词/名词
-  - ✅ 定义军事动词 `⟦◈verb⟧` 17个核心词，迁移3,950处
-  - ✅ 定义刑罚动词 `⟦◉verb⟧` 15个核心词，迁移2,028处
-  - ✅ 保留刑法制度名词 `〖[legal〗` 1,298处
-  - ✅ 开发迁移/查询/验证工具链
-  - ✅ 批量迁移全部130章，总计5,978处动词标注
-  - 📊 当前统计：**117,473个实体标注** (111,495名词 + 5,978动词)
-  - 📄 文档：[verb_taxonomy.md](kg/entities/data/verb_taxonomy.md) / [迁移报告](doc/entities/动词标注迁移报告_v3.0.md) / [统计报告](doc/entities/实体标注统计报告_v3.0.md)
+### 2026-03-30: 已完成任务迁移到Issues
+
+将已完成的TODO任务转为GitHub Issues并立即关闭，便于项目历史追溯：
+
+**最新完成任务 (2026-03-21) - 5个**:
+- [#64](https://github.com/baojie/shiji-kb/issues/64) 为所有SKILL添加YAML frontmatter ([89b1c38a](https://github.com/baojie/shiji-kb/commit/89b1c38a))
+- [#65](https://github.com/baojie/shiji-kb/issues/65) 司马迁文风研究实验 ([0117a825](https://github.com/baojie/shiji-kb/commit/0117a825))
+- [#66](https://github.com/baojie/shiji-kb/issues/66) 溯源推理分析实验 ([4ebda328](https://github.com/baojie/shiji-kb/commit/4ebda328))
+- [#67](https://github.com/baojie/shiji-kb/issues/67) 参与指南文档 ([21582643](https://github.com/baojie/shiji-kb/commit/21582643))
+- [#68](https://github.com/baojie/shiji-kb/issues/68) 技术文章《从历史书中探索知识图谱》 ([6360679d](https://github.com/baojie/shiji-kb/commit/6360679d))
+
+**历史完成任务 (2026-03-18及更早) - 16个**:
+- [#69](https://github.com/baojie/shiji-kb/issues/69) 动词标注体系 v3.0 (2026-03-18, [cca73582](https://github.com/baojie/shiji-kb/commit/cca73582))
+- [#70](https://github.com/baojie/shiji-kb/issues/70) 姓氏推理规划：SKILL_07b + spec + agent提示词模板 (2026-03-16)
+- [#71](https://github.com/baojie/shiji-kb/issues/71) Purple Numbers 可点击复制 (2026-02)
+- [#72](https://github.com/baojie/shiji-kb/issues/72) 实体交叉引用跳转 (2026-02-09)
+- [#73](https://github.com/baojie/shiji-kb/issues/73) 11类→15类实体标注体系（+典籍/礼仪/刑法/思想）(2026-03-13)
+- [#74](https://github.com/baojie/shiji-kb/issues/74) 实体索引15类HTML页面（含别名合并586条/消歧644处）(2026-03-13)
+- [#75](https://github.com/baojie/shiji-kb/issues/75) 语义消歧（4层启发式，644处）(2026-02-10)
+- [#76](https://github.com/baojie/shiji-kb/issues/76) 十表（013-022）表格渲染 (2026-02-09)
+- [#77](https://github.com/baojie/shiji-kb/issues/77) 事件年代五轮反思审查（98.7%覆盖，~2,119处修正）(2026-03-11)
+- [#78](https://github.com/baojie/shiji-kb/issues/78) 事件地铁图（130条线路）(2026-03-11)
+- [#79](https://github.com/baojie/shiji-kb/issues/79) 事件关系（7,652条）(2026-03-11)
+- [#80](https://github.com/baojie/shiji-kb/issues/80) 标注符号迁移（神话〖?〗/生物〖+〗）(2026-03-13)
+- [#81](https://github.com/baojie/shiji-kb/issues/81) v2.0实体标注符号迁移（〖〗格式 + 官职符号$→;）(2026-03-13)
+- [#82](https://github.com/baojie/shiji-kb/issues/82) 语义区块 ::: fenced div迁移 + 130篇太史公曰/赞标注补全 (2026-03-13)
+- [#83](https://github.com/baojie/shiji-kb/issues/83) 新增SKILL_区块与韵文处理.md（方法论SKILL增至11个）(2026-03-13)
+- [#84](https://github.com/baojie/shiji-kb/issues/84) 十表（013-022）事件补充提取（226个事件，平均每表22.6个）(2026-03-11)
+
+**查看全部已关闭Issues**: [GitHub Issues (closed)](https://github.com/baojie/shiji-kb/issues?q=is%3Aissue+is%3Aclosed)
+
+### 2026-03-30: 功能完成确认
+
+发现已完成功能，添加commit信息后关闭：
+
+- [#53](https://github.com/baojie/shiji-kb/issues/53) 十表导出CSV (2026-02-09, [d6e2b667](https://github.com/baojie/shiji-kb/commit/d6e2b667))
+- [#47](https://github.com/baojie/shiji-kb/issues/47) 响应式设计优化（移动端）- 网站已实现响应式设计
+- [#54](https://github.com/baojie/shiji-kb/issues/54) 实体标注格式改为非对称标签 (2026-03-16, [650aa7d3](https://github.com/baojie/shiji-kb/commit/650aa7d3))
+- [#51](https://github.com/baojie/shiji-kb/issues/51) 新实体类型评估 - 18类实体体系完成 (v1.0→v2.8演进)
 
 ---
 
 ## 🔥 近期优先
 
-### ⚠️ 最高优先级BUG修复
-
-- [ ] **【P0】修复 logs/lint_text_integrity.txt 被篡改的原文字符**（不要git restore，会丢失工作）
-  - 问题：文件被篡改+5105行/-1167行，违反"标注铁律"
-  - 篡改类型：将"阬"替换为"坑"，删除"仁义"、"公"，插入标点等
-  - 修复方法：对比git diff，识别哪些是新增的正常内容，哪些是篡改的原文
-  - 手动恢复被篡改的原文字符，保留新增的正常检查结果
-  - 📄 详见：[docs/ANTI_TAMPERING.md](docs/ANTI_TAMPERING.md)
+> **说明**：阅读体验、数据与内容、工程与架构、未来探索等功能建议已迁移到 [GitHub Issues](https://github.com/baojie/shiji-kb/issues)
 
 ### 常规优先任务
 
@@ -122,73 +175,6 @@
   - 每轮检查：遗漏（单字省称、泛称词）/ 消歧（同名异人）/ 别名（称谓映射）
   - 输出 corrections JSON → 写回 tagged.md → 重新生成索引，多轮迭代至收敛
 
----
-
-## 🎨 阅读体验
-
-- [ ] **实体悬浮预览**：鼠标悬停时，侧边栏显示实体简介 + 全书所有出现上下文
-- [ ] **实体索引升级为 Concordance**：词条 → 每次出现的前后文（约±15字），形成古汉语用法索引
-- [ ] **段落便签系统**：每段正文右侧显示彩色小便签，集成段落摘要与事件关联
-  - 每段都有便签：几字摘要（如"黄帝战蚩尤"），渲染为右侧浮动的彩色小卡片
-  - 若对应已抽取事件，便签上标注事件名+事件号（如 `001-005 黄帝战蚩尤`），点击跳转事件索引
-  - 未关联事件的段落也有纯文本摘要便签，辅助阅读导航和段落定位
-  - Markdown 扩展语法（已定）：中文全角括注独占一行，后接正文段落：
-    ```
-    【黄帝战蚩尤·001-005】
-    @黄帝@闻@蚩尤@作乱，乃征师诸侯...
-    ```
-    无事件关联时只写摘要：`【黄帝族系谱】`
-  - 视觉：便签颜色可按事件类型/段落性质区分（叙事/对话/太史公曰等）
-- [ ] **句间逻辑关系分析与可视化**：识别并标注句子之间的逻辑关系，辅助理解文章论证结构
-  - 关系类型：因果（则...矣）、递进（且...）、转折（然而/虽...）、并列（朝.../夕.../夜...）、小结（此X之乐也）、对比、让步等
-  - 可视化方式：参考排版实验（`doc/spec/排版实验_弋射说楚王.html`）中的设计——因果用缩进+左竖线、并列横排、小结背景色块
-  - 实现路径：LLM 分析每章句间关系 → 标注到 Markdown → 渲染器生成对应视觉样式
-  - 重点场景：策士说辞（苏秦/张仪等列传）、太史公论赞、诏令文书
-- [ ] **地铁图换乘设计**：当前换乘站（同一人物/地点出现在多条线路）的视觉呈现尚未设计好，需要重新规划换乘节点的样式和交互
-- [ ] **搜索功能**：全文搜索 + 按实体类型/章节筛选
-- [ ] **繁体支持**：默认繁体显示，提供繁简切换按钮
-- [ ] **地图联动**：点击地名显示历史地图（古今对照），集成CHGIS数据
-- [ ] **辞典释义**：点击官职/制度等词汇弹出释义
-- [ ] **实体颜色系统重设计**：15类颜色过多，优化视觉方案（减少颜色、hover显色等）
-- [ ] **语法高亮整体设计**：章节正文的视觉呈现需要一套完整的语法高亮设计方案
-  - 目前实体颜色、标点、引文等各自独立，缺乏整体视觉逻辑
-  - 需统筹考虑：实体类型颜色体系 / 引文与注释的视觉层次 / 韵文排版 / 对话分行 / 太史公曰段落
-  - 参考方向：古籍数字化（如 ctext.org）、代码高亮（语义分层）、学术版式（批注层叠）
-  - 最终输出：一份配色+排版规范，统一应用到 shiji-styles.css 和渲染器
-- [ ] 响应式设计优化（移动端）
-
----
-
-## 📚 数据与内容
-
-- [ ] **与中华书局版电子版校对**：对照点校本，核查正文文字差异（优先年表013-022）
-- [ ] **韵文识别与排版**：扫描130章，识别赞/颂/歌谣/骚体，统一缩进排版（太史公曰/赞已完成fenced div标注，剩余歌谣/骚体待处理）
-- [ ] **事件-实体同步更新**：实体别名/消歧改进后，同步更新事件索引中的 `people`/`locations` 字段
-- [ ] **新实体类型评估**：
-  - 「身份」类型（父/母/天子/外戚等关系称谓，与官职/人名区分）
-  - 「封国」类型（诸侯国、大夫封地、汉代侯国等有封授关系的政治领地，从&朝代&地名&/~族群~中剥离）
-- [ ] **事件罗生门**：把同一事件的不同章节描述汇总，标出差异（参见 07 矛盾检测）
-- [ ] **十表变成 CSV**：013–022 十表导出结构化 CSV，便于外部工具使用
-
----
-
-## 🔧 工程与架构
-
-- [ ] **实体标注格式：同符号→非对称标签**（如 `@人名]`）：解决嵌套解析脆弱问题（需批量迁移130章）
-- [ ] **知识图谱深化**：事件关系从孤立条目升级为带因果/并发/人物轨迹的事件图谱
-- [ ] Neo4j 图数据库导入
-- [ ] 添加自动化测试 + CI/CD 自动部署
-
----
-
-## 💡 未来探索
-
-- [ ] **文献对勘**：史记与《左传》《战国策》《汉书》重叠段落对照
-- [ ] **相似事件匹配**：向量化检索相似叙事模式（弑君/篡位/谋反等）
-- [ ] **AI 问答**：基于原文+知识图谱的 RAG 问答
-- [ ] **多维度解构阅读**：按主题分类浏览（军事/外交/制度等）
-- [ ] **词云**：章节+全书词云，基于实体标注
-- [ ] 从史记扩展到二十六史
 
 
 更多请看 [Github Issues](https://github.com/baojie/shiji-kb/issues)
@@ -205,24 +191,3 @@
  - 然后要做docs/SPEC_directory_restructure.md 约定的校勘相关文件夹重构，并更新所有相关文档和script
  - 然后要做skill 1b规定的校勘
 
----
-
-## ✅ 已完成
-
-| 项目 | 完成时间 |
-|------|---------|
-| 姓氏推理规划：SKILL_07b + spec + agent提示词模板 | 2026-03-16 |
-| Purple Numbers 可点击复制 | 2026-02 |
-| 实体交叉引用跳转 | 2026-02-09 |
-| 11类→15类实体标注体系（+典籍/礼仪/刑法/思想）| 2026-03-13 |
-| 实体索引15类HTML页面（含别名合并586条/消歧644处）| 2026-03-13 |
-| 语义消歧（4层启发式，644处）| 2026-02-10 |
-| 十表（013-022）表格渲染 | 2026-02-09 |
-| 事件年代五轮反思审查（98.7%覆盖，~2,119处修正）| 2026-03-11 |
-| 事件地铁图（130条线路）| 2026-03-11 |
-| 事件关系（7,652条）| 2026-03-11 |
-| 标注符号迁移（神话〖?〗/生物〖+〗）| 2026-03-13 |
-| v2.0实体标注符号迁移（〖〗格式 + 官职符号$→;）| 2026-03-13 |
-| 语义区块 ::: fenced div迁移 + 130篇太史公曰/赞标注补全 | 2026-03-13 |
-| 新增SKILL_区块与韵文处理.md（方法论SKILL增至11个）| 2026-03-13 |
-| 十表（013-022）事件补充提取（226个事件，平均每表22.6个）| 2026-03-11 |

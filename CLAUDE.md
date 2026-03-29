@@ -102,14 +102,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 不得替换原文字符（汉字、标点、引号、空格等）
 - 不得修改标点符号（全角半角转换、添加/删除标点等）
 - 不得添加引号（原文无引号则标注文件也不应添加引号）
+- **严禁嵌套标注**（如 `〖#〖#text〗〗` `〖%元〖~鼎〗五年〗` `⟦◈攻〖'秦〗⟧` 等）
 
 ✅ **允许的操作**：
-- 只能在原文字符周围添加 `〖TYPE 〗` 标记符号
+- 只能在原文字符周围添加 `〖TYPE 〗` 或 `⟦TYPE⟧` 标记符号
 - 消歧语法 `〖TYPE 显示名|规范名〗` 中的"规范名"不改变显示文本
+- 标注符号必须平铺，不得嵌套
 
 **验证方法**：
 - 将标注文件去除所有 `〖TYPE 〗` 符号后，所得纯文本必须与原始 `.txt` 文件逐字相同
-- 使用 `python scripts/lint_text_integrity.py` 验证完整性
+- 使用 `python scripts/lint_text_integrity.py` 验证文本完整性
+- 使用 `python scripts/lint_text_integrity.py --check-nested` 检测嵌套标注
 
 ## Git提交消息规范
 

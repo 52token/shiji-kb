@@ -10,11 +10,13 @@ lint_text_integrity.py — 标注文本完整性检查
     python scripts/lint_text_integrity.py              # 检查全部130章
     python scripts/lint_text_integrity.py 033 034      # 检查指定章节
     python scripts/lint_text_integrity.py --all        # 包含标点/编码差异
+    python scripts/lint_text_integrity.py --check-nested  # 检测嵌套标注
 
 差异分类（自动过滤）:
     【实质差异】— 汉字字符被增加/删除/改写，必须修复
     【标点规范化】— 全角↔半角标点（，→, 等），标注规范，可忽略
     【编码规范化】— PUA私用区字符→标准Unicode，可忽略
+    【嵌套标注】— 标注符号内包含其他标注符号，必须修复
 """
 
 import re
@@ -211,18 +213,86 @@ def compare_texts(orig_flat: str, tagged_flat: str) -> dict:
 
 
 # ═══════════════════════════════════════════════════════════
+# 嵌套标注检测
+# ═══════════════════════════════════════════════════════════
+
+def detect_nested_annotations(text: str) -> list[dict]:
+    """
+    检测嵌套标注模式。
+
+    返回: [{'type': 'nested_noun'|'nested_verb', 'match': str, 'line': int, 'context': str}, ...]
+    """
+    nested_patterns = []
+
+    # 名词实体嵌套检测：〖TYPE 〖TYPE content〗〗
+    # 匹配外层标注内包含内层标注的模式
+    noun_nested = re.compile(
+        r'〖[#@=;$%&^\~•!\'+?{:\[_]'  # 外层类型标记
+        r'[^〖〗]*?'                  # 外层开始部分（可选）
+        r'〖[#@=;$%&^\~•!\'+?{:\[_]'  # 内层类型标记
+        r'[^〖〗]*?'                  # 内层内容
+        r'〗'                         # 内层闭合
+        r'[^〖〗]*?'                  # 外层剩余部分（可选）
+        r'〗'                         # 外层闭合
+    )
+
+    # 动词标注嵌套检测：⟦TYPE ⟦TYPE content⟧⟧ 或 ⟦TYPE 〖TYPE content〗⟧
+    verb_nested = re.compile(
+        r'⟦[◈◉○◇]'                    # 外层动词类型
+        r'[^⟦⟧〖〗]*?'                # 外层开始部分
+        r'[⟦〖]'                       # 内层标注开始（动词或名词）
+        r'[^⟦⟧〖〗]*?'                # 内层内容
+        r'[⟧〗]'                       # 内层标注结束
+        r'[^⟦⟧〖〗]*?'                # 外层剩余部分
+        r'⟧'                           # 外层闭合
+    )
+
+    lines = text.split('\n')
+    for line_num, line in enumerate(lines, 1):
+        # 跳过标题行和注释
+        if line.strip().startswith('#') or line.strip().startswith(':::'):
+            continue
+
+        # 检测名词嵌套
+        for match in noun_nested.finditer(line):
+            nested_patterns.append({
+                'type': 'nested_noun',
+                'match': match.group(),
+                'line': line_num,
+                'context': _ctx(line, match.start(), half=30)
+            })
+
+        # 检测动词嵌套
+        for match in verb_nested.finditer(line):
+            nested_patterns.append({
+                'type': 'nested_verb',
+                'match': match.group(),
+                'line': line_num,
+                'context': _ctx(line, match.start(), half=30)
+            })
+
+    return nested_patterns
+
+
+# ═══════════════════════════════════════════════════════════
 # 章节检查
 # ═══════════════════════════════════════════════════════════
 
-def check_chapter(cid: str, orig_dir: Path, tagged_dir: Path):
+def check_chapter(cid: str, orig_dir: Path, tagged_dir: Path, check_nested: bool = False):
     orig_files   = sorted(orig_dir.glob(f'{cid}_*.txt'))
     tagged_files = sorted(tagged_dir.glob(f'{cid}_*.tagged.md'))
     if not orig_files:
-        return cid, None, '找不到原文文件'
+        return cid, None, '找不到原文文件', None
     if not tagged_files:
-        return cid, None, '找不到标注文件'
+        return cid, None, '找不到标注文件', None
 
     name        = orig_files[0].stem
+    tagged_text = tagged_files[0].read_text('utf-8')
+
+    # 嵌套标注检测（在去除标注前检测）
+    nested = detect_nested_annotations(tagged_text) if check_nested else None
+
+    # 文本完整性检测
     orig_text   = orig_files[0].read_text('utf-8')
     # 原文第一行是章节标题（与tagged的markdown标题对应，去除后再比对）
     orig_lines  = orig_text.splitlines(keepends=True)
@@ -230,9 +300,9 @@ def check_chapter(cid: str, orig_dir: Path, tagged_dir: Path):
         # 若第一行不是书名号包裹的内容，则视为标题行，跳过
         orig_text = ''.join(orig_lines[1:]) if len(orig_lines) > 1 else ''
     orig_flat   = to_flat(orig_text)
-    tagged_flat = to_flat(strip_markup(tagged_files[0].read_text('utf-8')))
+    tagged_flat = to_flat(strip_markup(tagged_text))
     result      = compare_texts(orig_flat, tagged_flat)
-    return name, result, None
+    return name, result, None, nested
 
 
 # ═══════════════════════════════════════════════════════════
@@ -275,9 +345,10 @@ def main():
 
     whitelist = _load_whitelist(root / 'scripts' / 'lint_whitelist.txt')
 
-    args     = sys.argv[1:]
-    show_all = '--all' in args
-    args     = [a for a in args if not a.startswith('--')]
+    args         = sys.argv[1:]
+    show_all     = '--all' in args
+    check_nested = '--check-nested' in args
+    args         = [a for a in args if not a.startswith('--')]
 
     if args:
         chapter_ids = [a.zfill(3) for a in args]
@@ -286,8 +357,8 @@ def main():
 
     results = []
     for cid in chapter_ids:
-        name, result, err = check_chapter(cid, orig_dir, tagged_dir)
-        results.append((name, result, err))
+        name, result, err, nested = check_chapter(cid, orig_dir, tagged_dir, check_nested)
+        results.append((name, result, err, nested))
         if err:
             print(f'  {name or cid}: ⚠ {err}')
         else:
@@ -297,9 +368,11 @@ def main():
             n_wl = nr_raw - nr
             np = result['punct_count']
             ne = result['encoding_count']
-            mark = '✓' if nr == 0 else '✗'
+            nn = len(nested) if nested else 0
+            mark = '✓' if nr == 0 and nn == 0 else '✗'
             wl_note = f'  校勘:{n_wl}' if n_wl else ''
-            print(f'  {mark} {name}: {nr}处实质差异  {np}处标点  {ne}处编码{wl_note}')
+            nest_note = f'  嵌套:{nn}' if check_nested else ''
+            print(f'  {mark} {name}: {nr}处实质差异  {np}处标点  {ne}处编码{wl_note}{nest_note}')
 
     # ── 报告 ──
     ts    = datetime.now().strftime('%Y-%m-%d %H:%M')
@@ -312,13 +385,14 @@ def main():
         '  【实质差异】= 汉字字符增/删/改，需要人工修复',
         '  【标点规范化】= 全角↔半角等价转换（，→, 等），可忽略',
         '  【编码规范化】= 原文PUA私用字符→标准Unicode，可忽略',
-        '',
-        '─' * 50,
     ]
+    if check_nested:
+        lines.append('  【嵌套标注】= 标注符号内包含其他标注符号，必须修复')
+    lines += ['', '─' * 50]
 
-    total_real = total_punct = total_enc = prob_chapters = 0
+    total_real = total_punct = total_enc = total_nested = prob_chapters = 0
 
-    for name, result, err in results:
+    for name, result, err, nested in results:
         if err:
             lines += ['', f'=== {name or "?"} ===  ⚠ {err}']
             continue
@@ -336,22 +410,33 @@ def main():
         nr = len(real_diffs)
         np = result['punct_count']
         ne = result['encoding_count']
-        total_real  += nr
-        total_punct += np
-        total_enc   += ne
-        if nr:
+        nn = len(nested) if nested else 0
+        total_real   += nr
+        total_punct  += np
+        total_enc    += ne
+        total_nested += nn
+        if nr or nn:
             prob_chapters += 1
 
-        if nr == 0 and not show_all:
+        if nr == 0 and nn == 0 and not show_all:
             continue
 
         wl_note = f'  校勘:{n_wl}' if n_wl else ''
-        lines += ['', f'=== {name} ===  实质:{nr}  标点:{np}  编码:{ne}{wl_note}']
+        nest_note = f'  嵌套:{nn}' if check_nested else ''
+        lines += ['', f'=== {name} ===  实质:{nr}  标点:{np}  编码:{ne}{wl_note}{nest_note}']
 
         if nr:
             lines.append(f'  ■ 实质差异 {nr} 处：')
             for i, d in enumerate(real_diffs, 1):
                 lines.append(fmt_diff(d, i))
+
+        if nn:
+            lines.append(f'  ■ 嵌套标注 {nn} 处：')
+            for i, n in enumerate(nested, 1):
+                type_label = '名词嵌套' if n['type'] == 'nested_noun' else '动词嵌套'
+                lines.append(f"  [{i}] {type_label} (行{n['line']})")
+                lines.append(f"      标注: {repr(n['match'])}")
+                lines.append(f"      上下文: {n['context']}")
 
         lines.append('')
 
@@ -362,12 +447,18 @@ def main():
         f'  有实质差异  : {prob_chapters} 章，共 {total_real} 处  ← 需要修复',
         f'  标点规范化  : {total_punct} 处  ← 可忽略',
         f'  编码规范化  : {total_enc} 处  ← 可忽略',
+    ]
+    if check_nested:
+        lines.append(f'  嵌套标注    : {total_nested} 处  ← 需要修复')
+    lines += [
         '',
         '差异类型说明:',
         '  插入（标注多字）— 标注时擅自加字，应删除多余字符',
         '  删除（标注少字）— 标注时丢失字符，应补回',
         '  替换            — 字符被改写，需核对是字形变体还是错误',
     ]
+    if check_nested:
+        lines.append('  嵌套标注        — 标注符号内包含其他标注符号，应拍平或选择正确类型')
 
     if args:
         suffix = '_' + '_'.join(a.zfill(3) for a in args)
@@ -376,7 +467,10 @@ def main():
     out = log_dir / f'lint_text_integrity{suffix}.txt'
     out.write_text('\n'.join(lines), encoding='utf-8')
     print(f'\n报告已保存: {out}')
-    print(f'汇总: {prob_chapters}/{len(results)} 章有实质差异，共 {total_real} 处')
+    if check_nested:
+        print(f'汇总: {prob_chapters}/{len(results)} 章有问题，实质差异 {total_real} 处，嵌套标注 {total_nested} 处')
+    else:
+        print(f'汇总: {prob_chapters}/{len(results)} 章有实质差异，共 {total_real} 处')
 
 
 if __name__ == '__main__':

@@ -191,11 +191,14 @@ def compare_texts(orig_flat: str, tagged_flat: str) -> dict:
     sm_raw = difflib.SequenceMatcher(None, orig_flat, tagged_flat, autojunk=False)
     raw_count = sum(1 for t, *_ in sm_raw.get_opcodes() if t != 'equal')
 
-    # PUA差异（编码）
+    # PUA差异（编码）— 检查原文侧和标注侧
     encoding_count = sum(
         1 for t, i1, i2, j1, j2 in
         difflib.SequenceMatcher(None, orig_flat, tagged_flat, autojunk=False).get_opcodes()
-        if t != 'equal' and any(0xE000 <= ord(c) <= 0xF8FF for c in orig_flat[i1:i2])
+        if t != 'equal' and (
+            any(0xE000 <= ord(c) <= 0xF8FF for c in orig_flat[i1:i2]) or
+            any(0xE000 <= ord(c) <= 0xF8FF for c in tagged_flat[j1:j2])
+        )
     )
 
     total_variant = raw_count - len(real_diffs) - encoding_count

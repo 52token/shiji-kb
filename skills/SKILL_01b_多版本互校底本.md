@@ -523,8 +523,6 @@ def align_texts(text1, text2):
 1. 陈垣:《校勘学释例》
 2. 张舜徽:《中国古代史籍校读法》
 3. 王欣夫:《文献学讲义》
-4. 赵生群:《史记版本研究》
-5. 刘操南:《史记校点辨正》
 
 ---
 
@@ -546,15 +544,22 @@ def align_texts(text1, text2):
 《史记》知识库项目中，`archive/chapter/` 作为标准底本，衍生出以下派生文件系统：
 
 ```
-archive/chapter/           ← 标准底本 (校对后)
+archive/chapter/           ← 原始底本（不可变，校对基准）
 ├── NNN_篇名.txt
 │
-派生文件系统：
+派生文件系统（从archive/chapter同步更新）：
 ├── archive/chapter_improved/   ← 改进版 (保留空行格式)
 ├── archive/chapter_numbered/   ← 编号版 (带[N]段落编号)
-├── docs/original_text/         ← 文档原文 (紧凑格式)
 └── chapter_md/                 ← 标注文件 (带〖@〗等标记)
+│
+独立工作定本（供其他工序使用）：
+└── docs/original_text/         ← 工作定本（可能与archive/chapter有差异）
 ```
+
+**重要说明**：
+- `archive/chapter/` 是lint完整性检查的唯一基准
+- `docs/original_text/` 是历史遗留的工作定本，供渲染等工序使用
+- 标注文件必须与 `archive/chapter/` 完全一致
 
 ### 同步更新原则
 
@@ -566,8 +571,8 @@ archive/chapter/           ← 标准底本 (校对后)
 2. **格式特征保持**
    - `archive/chapter_improved/`: 保留段落间空行
    - `archive/chapter_numbered/`: 保留 `[N]` 编号格式
-   - `docs/original_text/`: 保留紧凑无空行格式
    - `chapter_md/`: 保留所有 `〖TYPE 〗` 标注符号
+   - `docs/original_text/`: （独立维护，不强制同步）
 
 3. **标注符号铁律**
    - `chapter_md/` 中的标注符号（`〖@〗` `〖'〗` `⟦◈⟧` 等）绝对不可修改

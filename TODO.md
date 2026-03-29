@@ -1,6 +1,44 @@
 # 史记知识库 TODO
 
-> 最后更新：2026-03-23
+> 最后更新：2026-03-29
+
+---
+
+## 📋 待执行重构任务
+
+### 🏗️ 目录结构重构（底本终稿完成后执行）
+
+**前置条件**：完成001-130章的多版本互校（SKILL_01b）
+
+**任务清单**：
+- [ ] **目录结构迁移**：执行 `docs/SPEC_directory_restructure.md` 中定义的新目录结构
+  - 迁移 `archive/chapter/` → `archive/sources/chapter/`
+  - 迁移 `collation_base/` → `collation/simplified/`
+  - 迁移 `collation_reports/` → `collation/reports/`
+  - 创建 `archive/references/`（参考资料）
+  - 创建 `final/`（底本终稿目录）
+  - 备份旧目录到 `archive/legacy/`
+
+- [ ] **繁简映射系统**：实现基于上下文的鲁棒映射机制
+  - 开发 `scripts/mapping/generate_mapping.py`（生成初始映射）
+  - 开发 `scripts/mapping/update_mapping.py`（文本修改后更新映射）
+  - 开发 `scripts/mapping/apply_mapping.py`（简体标注→繁体渲染）
+  - 开发 `scripts/mapping/validate_mapping.py`（验证映射完整性）
+
+- [ ] **底本改进流程**：从 collation/ 生成 final/
+  - 开发 `scripts/improvements/normalize_punctuation.py`（标点全角归一化）
+  - 开发 `scripts/improvements/fix_paragraphs.py`（段落整合）
+  - 开发 `scripts/improvements/normalize_text.py`（空格/换行符/BOM规范化）
+  - 对全部130章执行改进流程
+  - 生成改进日志 `final/improvements/*.md`
+
+- [ ] **文档更新**：
+  - 更新 SKILL_01 引用新目录结构
+  - 更新 SKILL_01b 引用新目录结构和输出格式
+  - 创建 SKILL_01c（底本改进规范）
+  - 更新所有脚本的路径引用
+
+**详细规范**：[docs/SPEC_directory_restructure.md](docs/SPEC_directory_restructure.md)
 
 ---
 
@@ -159,8 +197,13 @@
 * 除了段落编号，其实所有的东西（实体，事件，事实，过程……）都需要ID。要写一个ID规范文档
 * 显示人物关系的图谱
 * 某个地名当时的地图
-* 写一个迁移指南，用另外一本书做例子，演示清楚怎么把现在的SKILL迁移到另一本书。这个迁移指南应该有一个skill（给agent看）和一个配套的doc（给人看）
+* 写一个迁移指南，用另外一本书做例子，演示清楚怎么把现在的SKILL迁移到另一本书。这个迁移指南应该有一个skill（给agent看）和一个配套的doc（给人看）。实现META 13的实例化
+* 校勘下加一个子skill 审音和拼音标注
 
+03-29 ：下面有三个校勘任务
+ - 首先要做一次完整性修复skill 01a，因为实体反思v3破坏了原文
+ - 然后要做docs/SPEC_directory_restructure.md 约定的校勘相关文件夹重构，并更新所有相关文档和script
+ - 然后要做skill 1b规定的校勘
 
 ---
 

@@ -9,6 +9,41 @@
 
 ---
 
+## 2026-03-29
+
+### 新增 (Added)
+
+- **多版本互校完成001-004章节** ([`collation_reports/`](collation_reports/)) ([66d77fa7])
+  - 标准底本校勘：筴→策、暐→檋、饹→奔等9处字符修正
+  - 派生文件同步：更新4个派生系统×4个章节=16个文件
+  - 4份校对报告（001-004章，共968行）
+
+- **SKILL_01b v1.1** ([`skills/SKILL_01b_多版本互校底本.md`](skills/SKILL_01b_多版本互校底本.md)) ([66d77fa7])
+  - 新增第9章"派生文件同步更新规范"（基于001-004实践形成SOP）
+  - 标准操作流程：校对→应用→同步→验证→更新报告
+  - 提供批量处理工具设计方案（适用于005-130章节）
+
+**详细工作日志**: [`logs/daily/2026-03-29.md`](logs/daily/2026-03-29.md)
+
+[66d77fa7]: https://github.com/baojie/shiji-kb/commit/66d77fa7
+
+---
+
+## 2026-03-28
+
+### 项目维护 (Maintenance)
+
+- 工作日志补齐：2026-03-25.md / 2026-03-26.md / 2026-03-27.md ([0460bbde])
+- README文档更新：根目录/labs/source-inference/publications四个层级 ([54cb86bf])
+- 每日日志SKILL完善：新增"太史公曰"无提交日处理规则 ([0460bbde])
+
+**详细工作日志**: [`logs/daily/2026-03-28.md`](logs/daily/2026-03-28.md)
+
+[0460bbde]: https://github.com/baojie/shiji-kb/commit/0460bbde
+[54cb86bf]: https://github.com/baojie/shiji-kb/commit/54cb86bf
+
+---
+
 ## 2026-03-26
 
 ### 新增 (Added)

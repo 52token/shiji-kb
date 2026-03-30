@@ -472,30 +472,39 @@ p > .para-num:only-child {
 
 /* ======================================== 配置面板样式 ======================================== */
 
-/* 浮动配置按钮 - 定位在导航栏右侧 */
+/* 浮动配置按钮 - 定位在导航栏右侧，无边框纯图标 */
 #settings-toggle {
     position: fixed;
     top: 27px;
-    right: 20px;
+    right: calc(50% - 450px + 20px);  /* 相对于 body max-width(900px) 右侧 20px */
     width: 32px;
     height: 32px;
-    border: 1px solid #ddd;
-    background: #ffffff;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    border-radius: 4px;
+    border: none;
+    background: transparent;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 20px;
     z-index: 1000;
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
+    opacity: 0.6;
+    padding: 0;
+}
+
+/* 在小屏幕上回退到右侧定位 */
+@media (max-width: 960px) {
+    #settings-toggle {
+        right: 20px;
+    }
+    #settings-panel {
+        right: 20px;
+    }
 }
 
 #settings-toggle:hover {
-    background: #f5f5f5;
-    border-color: #999;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+    opacity: 1;
+    transform: scale(1.15);
 }
 
 #settings-toggle:active {
@@ -506,7 +515,7 @@ p > .para-num:only-child {
 #settings-panel {
     position: fixed;
     top: 70px;
-    right: 20px;
+    right: calc(50% - 450px + 20px);  /* 与按钮对齐 */
     width: 280px;
     background: #ffffff;
     border: 1px solid #e0e0e0;

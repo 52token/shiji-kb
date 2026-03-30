@@ -9,6 +9,21 @@
     <script src="../../../docs/js/purple-numbers.js"></script>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
 <nav class="chapter-nav">
     <a href="../../../docs/index.html" class="nav-home">回到主页</a>
 </nav>
@@ -422,5 +437,67 @@
 <nav class="chapter-nav">
     <a href="../../../docs/index.html" class="nav-home">回到主页</a>
 </nav>
+
+<script>
+// 配置面板交互脚本
+(function() {
+    'use strict';
+
+    // 获取元素
+    const settingsToggle = document.getElementById('settings-toggle');
+    const settingsPanel = document.getElementById('settings-panel');
+    const syntaxHighlightCheckbox = document.getElementById('syntax-highlight');
+
+    if (!settingsToggle || !settingsPanel || !syntaxHighlightCheckbox) {
+        console.error('配置面板元素未找到');
+        return;
+    }
+
+    // 从 localStorage 加载配置
+    const savedHighlight = localStorage.getItem('syntax-highlight');
+    if (savedHighlight !== null) {
+        const isEnabled = savedHighlight === 'true';
+        syntaxHighlightCheckbox.checked = isEnabled;
+        updateSyntaxHighlight(isEnabled);
+    }
+
+    // 切换面板显示/隐藏
+    settingsToggle.addEventListener('click', function(e) {
+        e.stopPropagation();
+        settingsPanel.classList.toggle('active');
+    });
+
+    // 点击面板外关闭
+    document.addEventListener('click', function(e) {
+        if (!settingsPanel.contains(e.target) &&
+            !settingsToggle.contains(e.target) &&
+            settingsPanel.classList.contains('active')) {
+            settingsPanel.classList.remove('active');
+        }
+    });
+
+    // 点击面板内不关闭
+    settingsPanel.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // 语法高亮开关
+    syntaxHighlightCheckbox.addEventListener('change', function() {
+        const isEnabled = this.checked;
+        updateSyntaxHighlight(isEnabled);
+        // 保存到 localStorage
+        localStorage.setItem('syntax-highlight', isEnabled);
+    });
+
+    // 更新语法高亮状态
+    function updateSyntaxHighlight(enabled) {
+        if (enabled) {
+            document.body.classList.remove('syntax-highlight-off');
+        } else {
+            document.body.classList.add('syntax-highlight-off');
+        }
+    }
+})();
+</script>
 </body>
 </html>

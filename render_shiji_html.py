@@ -792,9 +792,25 @@ def markdown_to_html(md_file, output_file=None, css_file=None, prev_chapter=None
     <script src="{purple_numbers_js}"></script>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
 {nav_html}
 {html_body}
 {nav_html}
+<script src="../js/settings-panel.js"></script>
 </body>
 </html>
 """

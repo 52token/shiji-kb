@@ -139,6 +139,9 @@ def strip_markup(text: str) -> str:
     # 9. Markdown 分隔线（--- 等）
     text = re.sub(r'^-{3,}\s*$', '', text, flags=re.MULTILINE)
 
+    # 10. Markdown 表格分隔行（| --- | --- | 等，十表章节特有）
+    text = re.sub(r'^\|[\s\-|]+\|?\s*$', '', text, flags=re.MULTILINE)
+
     return text
 
 

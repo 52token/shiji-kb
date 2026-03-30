@@ -114,6 +114,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 使用 `python scripts/lint_text_integrity.py` 验证文本完整性
 - 使用 `python scripts/lint_text_integrity.py --check-nested` 检测嵌套标注
 
+**⚠️ 使用Edit工具时的特别注意**：
+- **绝对禁止替换全角符号为半角符号**（如 `""`→`""`、`''`→`''`、`（）`→`()`等）
+- Edit工具在处理Unicode字符时可能出现编码问题，导致文件损坏
+- 如需批量修改标注符号，优先使用专门的Python脚本而非Edit工具
+- 修改后必须验证文件完整性，确保原文字符未被改变
+
 ## Git提交消息规范
 
 - **只在用户明确要求时才commit**

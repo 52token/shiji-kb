@@ -2,6 +2,20 @@
 name: daily-wechat-summary
 title: 每日工作日志微信群总结
 description: 根据详细的每日工作日志生成适合微信群发送的简短平实文本
+status: ARCHIVED - 已整合进 skills/SKILL_10b_每日工作日志维护.md
+---
+
+# ⚠️ 归档说明
+
+**本文件内容已于 2026-03-30 整合进 [`skills/SKILL_10b_每日工作日志维护.md`](../../skills/SKILL_10b_每日工作日志维护.md)**
+
+请使用新的 SKILL 文件：
+- **位置**：`skills/SKILL_10b_每日工作日志维护.md`
+- **内容**：包含本文件的所有规范，并扩展了更完整的流程说明
+- **引用**：`CLAUDE.md` 中的引用已全部更新
+
+本文件保留作为历史备份。
+
 ---
 
 # SKILL: 每日工作日志微信群总结

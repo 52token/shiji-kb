@@ -17,7 +17,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 每日工作日志规范
 
-**重要**：生成或更新每日工作日志时，必须使用 [`logs/daily/SKILL_daily_wechat_summary.md`](logs/daily/SKILL_daily_wechat_summary.md) 中定义的SKILL规范。
+**重要**：生成或更新每日工作日志时，必须使用 [`skills/SKILL_10b_每日工作日志维护.md`](skills/SKILL_10b_每日工作日志维护.md) 中定义的SKILL规范。
 
 ### 工作日时间范围
 
@@ -33,7 +33,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
    ```
 
 2. **添加微信群通知**（必须）：
-   - 使用 `logs/daily/SKILL_daily_wechat_summary.md` SKILL
+   - 使用 `skills/SKILL_10b_每日工作日志维护.md` SKILL
    - 在日志文件开头添加 `## 微信群通知` 章节
    - 使用代码块包裹通知内容（方便复制）
    - 用 `---` 分隔线与后续内容分开

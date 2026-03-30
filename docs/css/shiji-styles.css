@@ -242,6 +242,69 @@ a.entity-link:hover {
     padding: 0 2px;
 }
 
+/* ======================================== 拼音注释样式（Ruby标注） ======================================== */
+
+/* Ruby 标注基础样式 */
+ruby {
+    ruby-position: over;
+    ruby-align: center;
+    margin: 0 0.03em;  /* ruby元素之间的左右间距，适度减小 */
+}
+
+/* 拼音文本（rt元素）样式 */
+rt.pinyin-rt {
+    font-family: system-ui, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-size: 0.5em;
+    font-weight: 400;
+    color: #7a6e62;
+    letter-spacing: 0.03em;  /* 拼音字母间距适度减小 */
+    line-height: 1.2;
+    padding: 0 0.08em;  /* 拼音左右padding适度减小 */
+}
+
+/* 标题中的拼音 */
+h1 rt.pinyin-rt,
+h2 rt.pinyin-rt,
+h3 rt.pinyin-rt {
+    font-size: 0.55em;
+    color: #6a5a4a;
+    padding: 0 0.1em;  /* 标题中的拼音间距也适度减小 */
+}
+
+/* 专名和多音字的拼音（不再强调显示） */
+rt.pinyin-rt.pinyin-emphasis {
+    /* 移除红色和加粗，与普通拼音保持一致 */
+}
+
+/* 特殊读音标识（可选：添加下划线或其他标识） */
+rt.pinyin-rt.pinyin-special {
+    /* 特殊读音词，与普通拼音保持一致，通过title提示区分 */
+    cursor: help;  /* 鼠标悬停显示帮助光标 */
+}
+
+/* 汉字部分保持原样式 */
+ruby .hanzi {
+    letter-spacing: 0.02em;  /* 汉字间距也相应减小 */
+}
+
+/* 拼音隐藏功能 - 当关闭拼音显示时隐藏所有 rt 元素 */
+body.pinyin-off rt.pinyin-rt {
+    display: none;
+}
+
+/* 调整行高以适应ruby标注 */
+body:not(.pinyin-off) p,
+body:not(.pinyin-off) li,
+body:not(.pinyin-off) blockquote {
+    line-height: 2.2;
+}
+
+body:not(.pinyin-off) h1,
+body:not(.pinyin-off) h2,
+body:not(.pinyin-off) h3 {
+    line-height: 1.8;
+}
+
 /* 章节标题 */
 h1 {
     color: #8B0000;

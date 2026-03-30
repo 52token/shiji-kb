@@ -1,0 +1,675 @@
+{
+  "$schema": "特殊读音词表 v2.0",
+  "description": "史记特殊读音词汇（人工整理 + 史记正义提取）",
+  "version": "2.4",
+  "lastUpdated": "2026-03-31",
+  "note": "合并人工整理词表和史记正义提取词表，来自正义的词条在note中标注",
+  "entries": [
+    {
+      "text": "冒顿单于",
+      "pinyin": [
+        "mò",
+        "dú",
+        "chán",
+        "yú"
+      ],
+      "context": "匈奴单于全称",
+      "note": "完整称号的特殊读音"
+    },
+    {
+      "text": "郦食其",
+      "pinyin": [
+        "lì",
+        "yì",
+        "jī"
+      ],
+      "context": "人名",
+      "note": "汉初谋士，'食'在人名中读yì，'其'读jī"
+    },
+    {
+      "text": "冒顿",
+      "pinyin": [
+        "mò",
+        "dú"
+      ],
+      "context": "匈奴单于名",
+      "note": "冒顿单于，匈奴历史上著名单于，'冒'读mò，'顿'读dú"
+    },
+    {
+      "text": "单于",
+      "pinyin": [
+        "chán",
+        "yú"
+      ],
+      "context": "匈奴君主称号",
+      "note": "'单'在此读chán，不读dān或shàn"
+    },
+    {
+      "text": "阏氏",
+      "pinyin": [
+        "yān",
+        "zhī"
+      ],
+      "context": "匈奴皇后称号",
+      "note": "'阏'读yān，'氏'读zhī"
+    },
+    {
+      "text": "大宛",
+      "pinyin": [
+        "dà",
+        "yuān"
+      ],
+      "context": "西域国名",
+      "note": "'宛'在国名中读yuān"
+    },
+    {
+      "text": "会稽",
+      "pinyin": [
+        "kuài",
+        "jī"
+      ],
+      "context": "地名",
+      "note": "'会'在此读kuài"
+    },
+    {
+      "text": "番禺",
+      "pinyin": [
+        "pān",
+        "yú"
+      ],
+      "context": "地名",
+      "note": "'番'读pān，'禺'读yú"
+    },
+    {
+      "text": "柏人",
+      "pinyin": [
+        "bó",
+        "rén"
+      ],
+      "context": "地名",
+      "note": "'柏'在此读bó"
+    },
+    {
+      "text": "句注",
+      "pinyin": [
+        "gōu",
+        "zhù"
+      ],
+      "context": "山名",
+      "note": "'句'读gōu"
+    },
+    {
+      "text": "句践",
+      "pinyin": [
+        "gōu",
+        "jiǎn"
+      ],
+      "context": "越王名",
+      "note": "'句'读gōu，'践'读jiǎn"
+    },
+    {
+      "text": "夫差",
+      "pinyin": [
+        "fú",
+        "chāi"
+      ],
+      "context": "吴王名",
+      "note": "'差'在人名中读chāi"
+    },
+    {
+      "text": "朝歌",
+      "pinyin": [
+        "zhāo",
+        "gē"
+      ],
+      "context": "地名",
+      "note": "'朝'在此读zhāo"
+    },
+    {
+      "text": "华山",
+      "pinyin": [
+        "huà",
+        "shān"
+      ],
+      "context": "山名",
+      "note": "'华'在华山读huà"
+    },
+    {
+      "text": "黑齿",
+      "pinyin": [
+        "hēi",
+        "chǐ"
+      ],
+      "context": "复姓",
+      "note": "复姓，齿读chǐ"
+    },
+    {
+      "text": "令狐",
+      "pinyin": [
+        "líng",
+        "hú"
+      ],
+      "context": "复姓",
+      "note": "复姓令狐"
+    },
+    {
+      "text": "滑稽",
+      "pinyin": [
+        "gǔ",
+        "jī"
+      ],
+      "context": "古义",
+      "note": "《史记·滑稽列传》中'滑'读gǔ，指能言善辩、机智应对"
+    },
+    {
+      "text": "阏与",
+      "pinyin": [
+        "yān",
+        "yǔ"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 赵奢破秦军处，正义：'音焉与'，'阏'读yān，'与'读yǔ"
+    },
+    {
+      "text": "亢父",
+      "pinyin": [
+        "gāng",
+        "fǔ"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 在今山东济宁，'亢'读gāng"
+    },
+    {
+      "text": "卷县",
+      "pinyin": [
+        "quān",
+        "xiàn"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 河南地名，'卷'读quān"
+    },
+    {
+      "text": "令支",
+      "pinyin": [
+        "líng",
+        "zhī"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 有孤竹城，'令'读líng"
+    },
+    {
+      "text": "方与",
+      "pinyin": [
+        "fāng",
+        "yǔ"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 兖州县名，'与'读yǔ"
+    },
+    {
+      "text": "峣关",
+      "pinyin": [
+        "yáo",
+        "guān"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 在蓝田，'峣'读yáo"
+    },
+    {
+      "text": "汶山",
+      "pinyin": [
+        "mín",
+        "shān"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 即岷山，'汶'读mín"
+    },
+    {
+      "text": "妫水",
+      "pinyin": [
+        "guī",
+        "shuǐ"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 舜居妫汭，'妫'读guī"
+    },
+    {
+      "text": "嶓冢",
+      "pinyin": [
+        "bō",
+        "zhǒng"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 汉水源头山名"
+    },
+    {
+      "text": "湔氐",
+      "pinyin": [
+        "jiān",
+        "dī"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 岷山在湔氐道"
+    },
+    {
+      "text": "汜水",
+      "pinyin": [
+        "sì",
+        "shuǐ"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 在成皋，'汜'读sì"
+    },
+    {
+      "text": "朝鲜",
+      "pinyin": [
+        "cháo",
+        "xiǎn"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 古国名，'朝'读cháo如潮汐"
+    },
+    {
+      "text": "樗里",
+      "pinyin": [
+        "chū",
+        "lǐ"
+      ],
+      "context": "人名",
+      "note": "[史记正义] 樗里子，秦惠王弟，'樗'读chū"
+    },
+    {
+      "text": "盱眙",
+      "pinyin": [
+        "xū",
+        "yí"
+      ],
+      "context": "人名或地名",
+      "note": "[史记正义] '盱'读xū，'眙'读yí"
+    },
+    {
+      "text": "大行",
+      "pinyin": [
+        "dà",
+        "háng"
+      ],
+      "context": "官职",
+      "note": "[史记正义] 掌宾客之官，'行'读háng"
+    },
+    {
+      "text": "仆射",
+      "pinyin": [
+        "pú",
+        "yè"
+      ],
+      "context": "官职",
+      "note": "[史记正义] 官名，'仆'读pú，'射'读yè"
+    },
+    {
+      "text": "华阳",
+      "pinyin": [
+        "huà",
+        "yáng"
+      ],
+      "context": "地名",
+      "note": "华阳，古地名，在华山之南，'华'读huà"
+    },
+    {
+      "text": "华阴",
+      "pinyin": [
+        "huà",
+        "yīn"
+      ],
+      "context": "地名",
+      "note": "华阴县，在华山之北，'华'读huà"
+    },
+    {
+      "text": "乐毅",
+      "pinyin": [
+        "yuè",
+        "yì"
+      ],
+      "context": "人名",
+      "note": "战国燕将，'乐'姓读yuè"
+    },
+    {
+      "text": "乐羊",
+      "pinyin": [
+        "yuè",
+        "yáng"
+      ],
+      "context": "人名",
+      "note": "战国魏将，'乐'姓读yuè"
+    },
+    {
+      "text": "员",
+      "pinyin": [
+        "yùn"
+      ],
+      "context": "姓氏",
+      "note": "伍子胥名员，读yùn"
+    },
+    {
+      "text": "华",
+      "pinyin": [
+        "huà"
+      ],
+      "context": "姓氏或地名",
+      "note": "华姓读huà"
+    },
+    {
+      "text": "解",
+      "pinyin": [
+        "xiè"
+      ],
+      "context": "姓氏",
+      "note": "姓解读xiè"
+    },
+    {
+      "text": "区",
+      "pinyin": [
+        "ōu"
+      ],
+      "context": "姓氏",
+      "note": "姓区读ōu"
+    },
+    {
+      "text": "仇",
+      "pinyin": [
+        "qiú"
+      ],
+      "context": "姓氏",
+      "note": "姓仇读qiú"
+    },
+    {
+      "text": "种",
+      "pinyin": [
+        "chóng"
+      ],
+      "context": "姓氏",
+      "note": "姓种读chóng"
+    },
+    {
+      "text": "尉",
+      "pinyin": [
+        "yù"
+      ],
+      "context": "姓氏",
+      "note": "尉迟、尉姓读yù"
+    },
+    {
+      "text": "殽",
+      "pinyin": [
+        "xiáo"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 殽山，秦晋战于殽"
+    },
+    {
+      "text": "鄢",
+      "pinyin": [
+        "yān"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 楚都鄢郢的鄢"
+    },
+    {
+      "text": "共",
+      "pinyin": [
+        "gòng"
+      ],
+      "context": "地名或国名",
+      "note": "[史记正义] 共伯和、共城，读gòng"
+    },
+    {
+      "text": "戏",
+      "pinyin": [
+        "xī"
+      ],
+      "context": "地名",
+      "note": "[史记正义] 戏水、戏戎，读xī不读xì"
+    },
+    {
+      "text": "为",
+      "pinyin": [
+        "wèi"
+      ],
+      "context": "动词",
+      "note": "[史记正义] 作为、成为义时读wèi（去声）"
+    },
+    {
+      "text": "长",
+      "pinyin": [
+        "zhǎng"
+      ],
+      "context": "动词或名词",
+      "note": "[史记正义] 生长、年长义时读zhǎng（上声）"
+    },
+    {
+      "text": "相",
+      "pinyin": [
+        "xiàng"
+      ],
+      "context": "名词",
+      "note": "[史记正义] 宰相、丞相读xiàng（去声）"
+    },
+    {
+      "text": "将",
+      "pinyin": [
+        "jiàng"
+      ],
+      "context": "名词",
+      "note": "[史记正义] 将军、大将读jiàng（去声）"
+    },
+    {
+      "text": "行",
+      "pinyin": [
+        "háng"
+      ],
+      "context": "名词",
+      "note": "[史记正义] 行列、道路义时读háng"
+    },
+    {
+      "text": "骑",
+      "pinyin": [
+        "jì"
+      ],
+      "context": "动词",
+      "note": "[史记正义] 跨骑义时读jì（去声）"
+    },
+    {
+      "text": "中",
+      "pinyin": [
+        "zhòng"
+      ],
+      "context": "动词",
+      "note": "[史记正义] 中试、射中义时读zhòng（去声）"
+    },
+    {
+      "text": "王",
+      "pinyin": [
+        "wàng"
+      ],
+      "context": "动词",
+      "note": "[史记正义] 称王、为王义时读wàng（去声）"
+    },
+    {
+      "text": "缪",
+      "pinyin": [
+        "miào"
+      ],
+      "context": "姓氏",
+      "note": "姓缪读miào，不读móu"
+    },
+    {
+      "text": "盖",
+      "pinyin": [
+        "gě"
+      ],
+      "context": "姓氏",
+      "note": "姓盖读gě，不读gài"
+    },
+    {
+      "text": "单",
+      "pinyin": [
+        "shàn"
+      ],
+      "context": "姓氏",
+      "note": "姓单读shàn，不同于'单于'的chán"
+    },
+    {
+      "text": "月氏",
+      "pinyin": [
+        "yuè",
+        "zhī"
+      ],
+      "context": "西域古国名",
+      "note": "[史记正义] '氏音支'，月氏国名，在葱岭之西，后被匈奴击败西迁"
+    },
+    {
+      "text": "头曼",
+      "pinyin": [
+        "tóu",
+        "mán"
+      ],
+      "context": "匈奴单于名",
+      "note": "[史记集解] 韦昭注：'头曼音瞒'，匈奴单于，冒顿之父"
+    },
+    {
+      "text": "夏侯婴",
+      "pinyin": [
+        "xià",
+        "hóu",
+        "yīng"
+      ],
+      "context": "人名",
+      "note": "汉初大臣，复姓夏侯"
+    },
+    {
+      "text": "叔孙通",
+      "pinyin": [
+        "shū",
+        "sūn",
+        "tōng"
+      ],
+      "context": "人名",
+      "note": "汉初制礼大臣，复姓叔孙"
+    },
+    {
+      "text": "申屠嘉",
+      "pinyin": [
+        "shēn",
+        "tú",
+        "jiā"
+      ],
+      "context": "人名",
+      "note": "汉文帝时丞相，复姓申屠"
+    },
+    {
+      "text": "端木赐",
+      "pinyin": [
+        "duān",
+        "mù",
+        "cì"
+      ],
+      "context": "人名",
+      "note": "孔子弟子子贡，复姓端木"
+    },
+    {
+      "text": "西门豹",
+      "pinyin": [
+        "xī",
+        "mén",
+        "bào"
+      ],
+      "context": "人名",
+      "note": "战国魏人，复姓西门，治邺有功"
+    },
+    {
+      "text": "百里奚",
+      "pinyin": [
+        "bǎi",
+        "lǐ",
+        "xī"
+      ],
+      "context": "人名",
+      "note": "秦穆公贤臣，复姓百里"
+    },
+    {
+      "text": "淳于髠",
+      "pinyin": [
+        "chún",
+        "yú",
+        "kūn"
+      ],
+      "context": "人名",
+      "note": "齐国辩士，复姓淳于，见《史记·滑稽列传》"
+    },
+    {
+      "text": "东方朔",
+      "pinyin": [
+        "dōng",
+        "fāng",
+        "shuò"
+      ],
+      "context": "人名",
+      "note": "汉武帝时文学家，复姓东方"
+    },
+    {
+      "text": "荥阳",
+      "pinyin": [
+        "xíng",
+        "yáng"
+      ],
+      "context": "地名",
+      "note": "古县名，在今河南，'荥'读xíng不读yíng"
+    },
+    {
+      "text": "涿郡",
+      "pinyin": [
+        "zhuō",
+        "jùn"
+      ],
+      "context": "地名",
+      "note": "古郡名，'涿'读zhuō"
+    },
+    {
+      "text": "邯郸",
+      "pinyin": [
+        "hán",
+        "dān"
+      ],
+      "context": "地名",
+      "note": "赵国都城，'邯'读hán，'郸'读dān"
+    },
+    {
+      "text": "嫘祖",
+      "pinyin": [
+        "léi",
+        "zǔ"
+      ],
+      "context": "人名",
+      "note": "[史记索隐] 黄帝妻，一曰雷祖，'嫘'读léi"
+    },
+    {
+      "text": "澹台灭明",
+      "pinyin": [
+        "tán",
+        "tái",
+        "miè",
+        "míng"
+      ],
+      "context": "人名",
+      "note": "孔子弟子，字子羽，复姓澹台"
+    },
+    {
+      "text": "荤粥",
+      "pinyin": [
+        "xūn",
+        "yù"
+      ],
+      "context": "族名",
+      "note": "[史记索隐] 匈奴别名，唐虞时称荤粥，'荤'读xūn，'粥'读yù"
+    }
+  ]
+}

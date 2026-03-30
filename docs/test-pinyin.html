@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>拼音功能测试</title>
+    <link rel="stylesheet" href="css/shiji-styles.css">
+    <style>
+        body {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            font-family: serif;
+            line-height: 2;
+        }
+        .test-section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .test-section h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+    <script defer src="js/heading-pinyin.js"></script>
+</head>
+<body>
+    <h1>拼音注释功能测试页面</h1>
+
+    <div class="test-section">
+        <h2>测试1: 特殊读音词 - 单于</h2>
+        <p class="test-text">冒顿单于即位，乃单于。</p>
+        <div class="status" id="status1">等待加载...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>测试2: 特殊读音词 - 阏与</h2>
+        <p class="test-text">赵奢破秦军于阏与。</p>
+        <div class="status" id="status2">等待加载...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>测试3: 特殊读音词 - 会稽</h2>
+        <p class="test-text">始皇巡游会稽山。</p>
+        <div class="status" id="status3">等待加载...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>测试4: 普通汉字</h2>
+        <p class="test-text">太史公曰：黄帝者，姬姓也。</p>
+        <div class="status" id="status4">等待加载...</div>
+    </div>
+
+    <div class="test-section">
+        <h2>词表加载状态</h2>
+        <div class="status" id="dict-status">检查中...</div>
+        <pre id="dict-info" style="background: #f5f5f5; padding: 10px; overflow-x: auto;"></pre>
+    </div>
+
+    <script>
+        // 等待拼音加载完成后检查结果
+        setTimeout(function() {
+            // 测试1: 单于
+            const test1 = document.querySelectorAll('.test-section')[0];
+            const shanyuElements = test1.querySelectorAll('rt.pinyin-rt');
+            let shanyuText = '';
+            shanyuElements.forEach(rt => {
+                const hanzi = rt.previousElementSibling.textContent;
+                if (hanzi === '单' || hanzi === '于') {
+                    shanyuText += rt.textContent + ' ';
+                }
+            });
+            const status1 = document.getElementById('status1');
+            if (shanyuText.includes('chán') && shanyuText.includes('yú')) {
+                status1.className = 'status success';
+                status1.textContent = '✓ 通过：单于读音为 ' + shanyuText.trim();
+            } else {
+                status1.className = 'status error';
+                status1.textContent = '✗ 失败：单于读音为 ' + shanyuText.trim() + '（期望: chán yú）';
+            }
+
+            // 测试2: 阏与
+            const test2 = document.querySelectorAll('.test-section')[1];
+            const eyuElements = test2.querySelectorAll('rt.pinyin-rt');
+            let eyuText = '';
+            eyuElements.forEach(rt => {
+                const hanzi = rt.previousElementSibling.textContent;
+                if (hanzi === '阏' || hanzi === '与') {
+                    eyuText += rt.textContent + ' ';
+                }
+            });
+            const status2 = document.getElementById('status2');
+            if (eyuText.includes('yān') && eyuText.includes('yǔ')) {
+                status2.className = 'status success';
+                status2.textContent = '✓ 通过：阏与读音为 ' + eyuText.trim();
+            } else {
+                status2.className = 'status error';
+                status2.textContent = '✗ 失败：阏与读音为 ' + eyuText.trim() + '（期望: yān yǔ）';
+            }
+
+            // 测试3: 会稽
+            const test3 = document.querySelectorAll('.test-section')[2];
+            const huijiElements = test3.querySelectorAll('rt.pinyin-rt');
+            let huijiText = '';
+            huijiElements.forEach(rt => {
+                const hanzi = rt.previousElementSibling.textContent;
+                if (hanzi === '会' || hanzi === '稽') {
+                    huijiText += rt.textContent + ' ';
+                }
+            });
+            const status3 = document.getElementById('status3');
+            if (huijiText.includes('kuài') && huijiText.includes('jī')) {
+                status3.className = 'status success';
+                status3.textContent = '✓ 通过：会稽读音为 ' + huijiText.trim();
+            } else {
+                status3.className = 'status error';
+                status3.textContent = '✗ 失败：会稽读音为 ' + huijiText.trim() + '（期望: kuài jī）';
+            }
+
+            // 测试4: 普通汉字
+            const test4 = document.querySelectorAll('.test-section')[3];
+            const normalElements = test4.querySelectorAll('rt.pinyin-rt');
+            const status4 = document.getElementById('status4');
+            if (normalElements.length > 0) {
+                status4.className = 'status success';
+                status4.textContent = '✓ 通过：普通汉字拼音已加载（' + normalElements.length + '个拼音）';
+            } else {
+                status4.className = 'status error';
+                status4.textContent = '✗ 失败：未检测到拼音';
+            }
+
+            // 显示词表加载状态
+            fetch('data/special-pronunciation.json')
+                .then(r => r.json())
+                .then(data => {
+                    const dictStatus = document.getElementById('dict-status');
+                    const dictInfo = document.getElementById('dict-info');
+                    dictStatus.className = 'status success';
+                    dictStatus.textContent = '✓ 特殊读音词表加载成功';
+
+                    const shanyu = data.entries.find(e => e.text === '单于');
+                    const eyu = data.entries.find(e => e.text === '阏与');
+                    const huiji = data.entries.find(e => e.text === '会稽');
+
+                    dictInfo.textContent =
+                        '词表版本: ' + data.version + '\n' +
+                        '词条总数: ' + data.entries.length + '\n' +
+                        '更新日期: ' + data.lastUpdated + '\n\n' +
+                        '测试词条:\n' +
+                        '  单于: ' + (shanyu ? shanyu.pinyin.join(' ') : '未找到') + '\n' +
+                        '  阏与: ' + (eyu ? eyu.pinyin.join(' ') : '未找到') + '\n' +
+                        '  会稽: ' + (huiji ? huiji.pinyin.join(' ') : '未找到');
+                })
+                .catch(e => {
+                    const dictStatus = document.getElementById('dict-status');
+                    dictStatus.className = 'status error';
+                    dictStatus.textContent = '✗ 词表加载失败: ' + e.message;
+                });
+        }, 3000);
+    </script>
+</body>
+</html>

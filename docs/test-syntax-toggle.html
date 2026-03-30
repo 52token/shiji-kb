@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>测试语法高亮切换</title>
+    <link rel="stylesheet" href="css/shiji-styles.css">
+    <style>
+        body {
+            padding: 40px;
+        }
+        #debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="debug">
+        <div>Body classes: <span id="classes">无</span></div>
+        <div>语法高亮: <span id="status">开启</span></div>
+    </div>
+
+    <h1>语法高亮切换测试</h1>
+
+    <button id="toggle-btn">切换语法高亮</button>
+    <button id="add-class">添加 syntax-highlight-off 类</button>
+    <button id="remove-class">移除 syntax-highlight-off 类</button>
+
+    <h2>测试文本</h2>
+    <p>
+        <span class="person">项羽</span>在<span class="place">会稽</span>起兵，
+        自立为<span class="official">西楚霸王</span>。
+        后于<span class="time">汉五年</span>败于<span class="place">垓下</span>。
+    </p>
+
+    <p>
+        <span class="dynasty">秦</span>末，天下大乱。
+        <span class="person">陈涉</span>首举义旗，
+        建<span class="feudal-state">张楚</span>政权。
+    </p>
+
+    <script>
+        function updateDebug() {
+            const classes = document.body.className || '无';
+            const hasOffClass = document.body.classList.contains('syntax-highlight-off');
+            document.getElementById('classes').textContent = classes;
+            document.getElementById('status').textContent = hasOffClass ? '关闭' : '开启';
+        }
+
+        document.getElementById('toggle-btn').addEventListener('click', function() {
+            document.body.classList.toggle('syntax-highlight-off');
+            updateDebug();
+        });
+
+        document.getElementById('add-class').addEventListener('click', function() {
+            document.body.classList.add('syntax-highlight-off');
+            updateDebug();
+        });
+
+        document.getElementById('remove-class').addEventListener('click', function() {
+            document.body.classList.remove('syntax-highlight-off');
+            updateDebug();
+        });
+
+        // 初始化调试信息
+        updateDebug();
+    </script>
+</body>
+</html>

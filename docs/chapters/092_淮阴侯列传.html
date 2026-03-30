@@ -7,22 +7,14 @@
     <link rel="stylesheet" href="../css/shiji-styles.css">
     <link rel="stylesheet" href="../css/chapter-nav.css">
     <script src="../js/purple-numbers.js"></script>
+    <script defer src="../js/heading-pinyin.js"></script>
 </head>
 <body>
 <!-- 浮动配置按钮 -->
 <button id="settings-toggle" title="显示设置">⚙️</button>
 
-<!-- 配置面板 -->
-<div id="settings-panel">
-    <h3>显示设置</h3>
-
-    <div class="setting-group">
-        <label class="setting-item">
-            <input type="checkbox" id="syntax-highlight" checked>
-            <span>语法高亮</span>
-        </label>
-    </div>
-</div>
+<!-- 配置面板（由 settings-panel-config.js 动态生成内容） -->
+<div id="settings-panel"></div>
 
 <nav class="chapter-nav">
     <a href="../index.html" class="nav-home">回到主页</a>
@@ -133,6 +125,6 @@
     <a href="091_黥布列传.html" class="nav-prev">← 上一页</a>
     <a href="093_韩信卢绾列传.html" class="nav-next">下一页 →</a>
 </nav>
-<script src="../js/settings-panel.js"></script>
+<script src="../js/settings-panel-config.js"></script>
 </body>
 </html>

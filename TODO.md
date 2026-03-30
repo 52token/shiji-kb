@@ -1,6 +1,6 @@
 # 史记知识库 TODO
 
-> 最后更新：2026-03-30
+> 最后更新：2026-03-30 (新增#85北大考古学生反馈相关issues)
 >
 > **重要说明**：
 > - 本文件保留核心开发任务和执行中的流程任务
@@ -10,6 +10,38 @@
 ---
 
 ## 📋 待执行重构任务
+
+### 🗂️ 结构化知识库导出
+
+**任务**：生成标准格式的知识库汇总文件，便于机器读取和跨平台使用
+
+**输出格式**：
+- [ ] **JSON格式**：`kg/export/shiji_kb.json` - 包含实体、事件、关系、本体的完整结构
+- [ ] **YAML格式**：`kg/export/shiji_kb.yaml` - 人类可读性更强的层级结构
+- [ ] **RDF/Turtle格式**：`kg/export/shiji_kb.ttl` - 语义网标准格式，支持SPARQL查询
+
+**数据结构设计**：
+- 实体索引（entity_index.json）→ 统一实体表
+- 动词索引（verb_index.json）→ 动词表
+- 事件索引（130章事件）→ 统一事件表
+- 事件关系（event_relations.json）→ 关系表
+- 本体（ontology/）→ 类型层级和属性定义
+- SKU（knowledge-units/）→ 知识单元表
+
+**用途**：
+- 支持外部工具导入（如Neo4j、GraphDB等）
+- 便于跨项目引用和二次开发
+- 提供API友好的数据接口
+- 支持学术研究数据集发布
+
+**参考规范**：
+- JSON-LD for linked data
+- Schema.org vocabulary
+- Dublin Core metadata
+
+**优先级**：中（可作为2026 Q2任务）
+
+---
 
 ### 🏗️ 目录结构重构（底本终稿完成后执行）
 
@@ -48,6 +80,26 @@
 ---
 
 ## 📝 近期转移到Issue的任务
+
+### 2026-03-30: 北大考古学生反馈 (Issue #85)
+
+根据北京大学考古文博学院师生的课堂反馈，新建和增补以下Issues：
+
+**新建Issues (3个)**:
+- [#87](https://github.com/baojie/shiji-kb/issues/87) 文本版本体系：版本信息、注释、异文集成展示
+- [#88](https://github.com/baojie/shiji-kb/issues/88) 图文对照：原始典籍页面与数字文本并列展示
+- [#89](https://github.com/baojie/shiji-kb/issues/89) 官制词典：辅助理解复杂官制体系
+
+**增补到现有Issues (2个)**:
+- [#41](https://github.com/baojie/shiji-kb/issues/41) 全文搜索功能 - 增补模糊搜索改进需求（提高准确度，扩展至地名、官职、典故等）
+- [#60](https://github.com/baojie/shiji-kb/issues/60) AI问答(RAG) - 增补问题驱动数据库建设需求（史料溯源、作者意图分析、系统性发现）
+
+**已完成 (1个)**:
+- [#17](https://github.com/baojie/shiji-kb/issues/17) 开关面板 - ✅ 语法高亮开关已实现
+
+**社区反馈文档**: [resources/community/2026-03-30_北大考古学生反馈_issue85.md](resources/community/2026-03-30_北大考古学生反馈_issue85.md)
+
+---
 
 ### 2026-03-30: 功能建议大迁移
 

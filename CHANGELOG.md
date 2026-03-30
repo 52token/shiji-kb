@@ -11,7 +11,29 @@
 
 ## 2026-03-30
 
+### 新增 (Added)
+
+- **配置面板功能** ([#17], [68e9c8cb])
+  - 新增右上角齿轮图标按钮，点击打开配置面板
+  - 实现语法高亮开关，持久化保存用户偏好（localStorage）
+  - 批量更新131个章节HTML文件，自动注入配置面板
+  - 透明无边框按钮设计，内容区相对定位（响应式布局）
+  - 覆盖23种实体类型的样式重置（19个名词+4个动词）
+
+- **社区反馈管理** ([#85])
+  - 新建 `resources/community/` 目录，记录社区通信
+  - 完整记录北京大学考古学生试用反馈（赵冬梅教授课堂）
+  - 6点建议对应6个Issue：1个已完成（#17），3个新建（#87, #88, #89），2个增补（#41, #60）
+
 ### 项目管理 (Project Management)
+
+- **北大考古学生反馈处理** ([#85])
+  - 新建Issue #87: 文本版本体系（版本信息、注释、异文集成）
+  - 新建Issue #88: 图文对照（原始典籍页面与数字文本并列）
+  - 新建Issue #89: 官制词典（辅助理解复杂官制体系）
+  - 增补Issue #41: 模糊搜索改进（扩展至地名、官职、典故）
+  - 增补Issue #60: 问题驱动数据库（史料溯源、作者意图分析）
+  - 更新TODO.md和README.md，添加社区反馈章节
 
 - **Issue分类体系完善** ([#1], [#2], [#4], [#22], [#29], [#30], [#31], [#32], [#33])
   - 为9个未分类的closed issue添加标签（符合SKILL_10a七类标签体系）
@@ -50,6 +72,7 @@
 [#1]: https://github.com/baojie/shiji-kb/issues/1
 [#2]: https://github.com/baojie/shiji-kb/issues/2
 [#4]: https://github.com/baojie/shiji-kb/issues/4
+[#17]: https://github.com/baojie/shiji-kb/issues/17
 [#22]: https://github.com/baojie/shiji-kb/issues/22
 [#24]: https://github.com/baojie/shiji-kb/issues/24
 [#29]: https://github.com/baojie/shiji-kb/issues/29
@@ -57,6 +80,13 @@
 [#31]: https://github.com/baojie/shiji-kb/issues/31
 [#32]: https://github.com/baojie/shiji-kb/issues/32
 [#33]: https://github.com/baojie/shiji-kb/issues/33
+[#41]: https://github.com/baojie/shiji-kb/issues/41
+[#60]: https://github.com/baojie/shiji-kb/issues/60
+[#85]: https://github.com/baojie/shiji-kb/issues/85
+[#87]: https://github.com/baojie/shiji-kb/issues/87
+[#88]: https://github.com/baojie/shiji-kb/issues/88
+[#89]: https://github.com/baojie/shiji-kb/issues/89
+[68e9c8cb]: https://github.com/baojie/shiji-kb/commit/68e9c8cb
 
 ---
 

@@ -9,6 +9,21 @@
     <script src="../js/purple-numbers.js"></script>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
 <nav class="chapter-nav">
     <a href="../index.html" class="nav-home">回到主页</a>
     <a href="089_张耳陈馀列传.html" class="nav-prev">← 上一页</a>
@@ -56,7 +71,7 @@
 </div>
 
 <div class="note-box note-赞" title="赞">
-<p><a href="#pn-13" id="pn-13" class="para-num" title="点击复制链接">13</a> <a href="../entities/person.html#entity-魏咎" class="entity-link" target="_blank"><span class="person" title="人名">魏咎</span></a>〖#<a href="../entities/identity.html#entity-兄" class="entity-link" target="_blank"><span class="identity" title="身份">兄</span></a>弟〗，因时而<a href="../entities/legal.html#entity-王" class="entity-link" target="_blank"><span class="legal" title="刑法">王</span></a>。<br>
+<p><a href="#pn-13" id="pn-13" class="para-num" title="点击复制链接">13</a> <a href="../entities/person.html#entity-魏咎" class="entity-link" target="_blank"><span class="person" title="人名">魏咎</span></a><a href="../entities/identity.html#entity-兄弟" class="entity-link" target="_blank"><span class="identity" title="身份">兄弟</span></a>，因时而<a href="../entities/legal.html#entity-王" class="entity-link" target="_blank"><span class="legal" title="刑法">王</span></a>。<br>
 <a href="../entities/person.html#entity-魏豹" class="entity-link" target="_blank"><span class="person" title="人名">豹</span></a>後属<a href="../entities/feudal-state.html#entity-楚" class="entity-link" target="_blank"><span class="feudal-state" title="邦国">楚</span></a>，其国遂<span class="verb-penalty" title="刑罚动词">亡</span>。<br>
 <a href="../entities/person.html#entity-管仲" class="entity-link" target="_blank"><span class="person" title="人名">仲</span></a>起<a href="../entities/place.html#entity-昌邑" class="entity-link" target="_blank"><span class="place" title="地名">昌邑</span></a>，归<a href="../entities/feudal-state.html#entity-汉" class="entity-link" target="_blank"><span class="feudal-state" title="邦国">汉</span></a><a href="../entities/place.html#entity-外黄" class="entity-link" target="_blank"><span class="place" title="地名">外黄</span></a>。<br>
 往来声援，再续军<a href="../entities/artifact.html#entity-粮" class="entity-link" target="_blank"><span class="artifact" title="器物">粮</span></a>。<br>
@@ -68,5 +83,6 @@
     <a href="089_张耳陈馀列传.html" class="nav-prev">← 上一页</a>
     <a href="091_黥布列传.html" class="nav-next">下一页 →</a>
 </nav>
+<script src="../js/settings-panel.js"></script>
 </body>
 </html>

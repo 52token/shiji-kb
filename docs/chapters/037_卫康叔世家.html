@@ -9,6 +9,21 @@
     <script src="../js/purple-numbers.js"></script>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
 <nav class="chapter-nav">
     <a href="../index.html" class="nav-home">回到主页</a>
     <a href="036_陈杞世家.html" class="nav-prev">← 上一页</a>
@@ -205,5 +220,6 @@
     <a href="036_陈杞世家.html" class="nav-prev">← 上一页</a>
     <a href="038_宋微子世家.html" class="nav-next">下一页 →</a>
 </nav>
+<script src="../js/settings-panel.js"></script>
 </body>
 </html>

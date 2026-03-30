@@ -28,10 +28,27 @@
     </style>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
+
     <h1>史记章节列表</h1>
     <div class="redirect-message">
         <p>正在跳转到主页...</p>
         <p>如果没有自动跳转，请点击 <a href="../index.html">这里</a></p>
     </div>
+<script src="../js/settings-panel.js"></script>
 </body>
 </html>

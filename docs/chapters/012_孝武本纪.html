@@ -9,6 +9,21 @@
     <script src="../js/purple-numbers.js"></script>
 </head>
 <body>
+<!-- 浮动配置按钮 -->
+<button id="settings-toggle" title="显示设置">⚙️</button>
+
+<!-- 配置面板 -->
+<div id="settings-panel">
+    <h3>显示设置</h3>
+
+    <div class="setting-group">
+        <label class="setting-item">
+            <input type="checkbox" id="syntax-highlight" checked>
+            <span>语法高亮</span>
+        </label>
+    </div>
+</div>
+
 <nav class="chapter-nav">
     <a href="../index.html" class="nav-home">回到主页</a>
     <a href="011_孝景本纪.html" class="nav-prev">← 上一页</a>
@@ -818,7 +833,7 @@
 
 <p><a href="#pn-43.3" id="pn-43.3" class="para-num" title="点击复制链接">43.3</a> <a href="../entities/place.html#entity-济南" class="entity-link" target="_blank"><span class="place" title="地名">济南</span></a>人<a href="../entities/person.html#entity-公玉带" class="entity-link" target="_blank"><span class="person" title="人名">公玉带</span></a>上<a href="../entities/mythical.html#entity-黄帝" class="entity-link" target="_blank"><span class="mythical" title="神话/传说">黄帝</span></a>时<a href="../entities/artifact.html#entity-明堂" class="entity-link" target="_blank"><span class="artifact" title="器物">明堂</span></a>图。</p>
 
-<p><a href="#pn-43.4" id="pn-43.4" class="para-num" title="点击复制链接">43.4</a> <a href="../entities/artifact.html#entity-明堂" class="entity-link" target="_blank"><span class="artifact" title="器物">明堂</span></a>图中有一殿，四面无壁，以茅盖，通水，圜宫垣为<a href="../entities/artifact.html#entity-衤复道" class="entity-link" target="_blank"><span class="artifact" title="器物">衤复道</span></a>，上有楼，从西南入，命曰<a href="../entities/place.html#entity-昆仑" class="entity-link" target="_blank"><span class="place" title="地名">昆仑</span></a>，<a href="../entities/identity.html#entity-天子" class="entity-link" target="_blank"><span class="identity" title="身份">天子</span></a>从之入，以拜祠<a href="../entities/mythical.html#entity-上帝" class="entity-link" target="_blank"><span class="mythical" title="神话/传说">上帝</span></a>焉。</p>
+<p><a href="#pn-43.4" id="pn-43.4" class="para-num" title="点击复制链接">43.4</a> <a href="../entities/artifact.html#entity-明堂" class="entity-link" target="_blank"><span class="artifact" title="器物">明堂</span></a>图中有一殿，四面无壁，以茅盖，通水，圜宫垣为<a href="../entities/artifact.html#entity-複道" class="entity-link" target="_blank"><span class="artifact" title="器物">複道</span></a>，上有楼，从西南入，命曰<a href="../entities/place.html#entity-昆仑" class="entity-link" target="_blank"><span class="place" title="地名">昆仑</span></a>，<a href="../entities/identity.html#entity-天子" class="entity-link" target="_blank"><span class="identity" title="身份">天子</span></a>从之入，以拜祠<a href="../entities/mythical.html#entity-上帝" class="entity-link" target="_blank"><span class="mythical" title="神话/传说">上帝</span></a>焉。</p>
 
 <p><a href="#pn-43.5" id="pn-43.5" class="para-num" title="点击复制链接">43.5</a> 於是上令<a href="../entities/place.html#entity-奉高" class="entity-link" target="_blank"><span class="place" title="地名">奉高</span></a>作<a href="../entities/artifact.html#entity-明堂" class="entity-link" target="_blank"><span class="artifact" title="器物">明堂</span></a><a href="../entities/place.html#entity-汶" class="entity-link" target="_blank"><span class="place" title="地名">汶</span></a>上，如<a href="../entities/person.html#entity-叔带" class="entity-link" target="_blank"><span class="person" title="人名">带</span></a>图。</p>
 
@@ -1003,5 +1018,6 @@
     <a href="011_孝景本纪.html" class="nav-prev">← 上一页</a>
     <a href="013_三代世表.html" class="nav-next">下一页 →</a>
 </nav>
+<script src="../js/settings-panel.js"></script>
 </body>
 </html>

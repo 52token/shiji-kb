@@ -2,7 +2,7 @@
 
 > 两千年来我们读《史记》，现在让机器帮我们"看见"隐藏的知识网络。
 
-**在线阅读**: [https://baojie.github.io/shiji-kb](https://baojie.github.io/shiji-kb) | **许可证**: [CC BY-NC-SA 4.0](LICENSE)
+**在线阅读**: [https://52token.github.io/shiji-kb/](https://52token.github.io/shiji-kb/) | **许可证**: [CC BY-NC-SA 4.0](LICENSE)
 
 ---
 

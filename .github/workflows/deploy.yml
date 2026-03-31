@@ -1,0 +1,49 @@
+# 工作流名称
+name: Deploy to GitHub Pages
+
+# 触发条件：当代码被推送到 main 分支时运行
+on:
+  push:
+    branches:
+      - main
+  # 同时也允许你从 GitHub Actions 页面手动触发
+  workflow_dispatch:
+
+# 设置 GITHUB_TOKEN 的权限，允许部署到 Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 确保同一时间内只有一个部署任务在运行，避免冲突
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # 部署任务
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      # 第一步：拉取你仓库的代码
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 第二步：配置 GitHub Pages 环境
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # 第三步：上传 `docs` 文件夹作为部署的“制品”（Artifact）
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # 这里指定了要部署的文件夹就是项目根目录下的 docs
+          path: './docs'
+
+      # 第四步：将“制品”部署到 GitHub Pages
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

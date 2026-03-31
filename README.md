@@ -29,7 +29,7 @@
 
 ### 在线阅读器
 
-**首页**: [https://baojie.github.io/shiji-kb](https://baojie.github.io/shiji-kb)
+**首页**: [https://52token.github.io/shiji-kb/](https://52token.github.io/shiji-kb/)
 
 **精选章节**:
 - [五帝本纪](https://baojie.github.io/shiji-kb/chapters/001_五帝本纪.html) - 上古神话与帝王传说
